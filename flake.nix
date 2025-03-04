@@ -121,6 +121,8 @@
                 libwacom
                 xf86_input_wacom
                 evtest
+                krita
+                blender
                 nvim-nix.defaultPackage.${system}
               ];
 
