@@ -114,9 +114,12 @@
                 nodejs_23
                 unzip
                 i3
+                hwinfo
                 wineWowPackages.stable
+                arandr
                 libwacom
                 xf86_input_wacom
+                evtest
                 nvim-nix.defaultPackage.${system}
               ];
 
