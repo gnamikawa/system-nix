@@ -116,6 +116,7 @@
                 i3
                 hwinfo
                 wineWowPackages.stable
+                pcmanfm
                 arandr
                 libwacom
                 xf86_input_wacom
