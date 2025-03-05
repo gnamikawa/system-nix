@@ -53,7 +53,23 @@
               xserver = {
                 enable = true;
                 xkb.layout = "us";
-                displayManager.gdm.enable = true;
+                displayManager =
+                  {
+                    gdm.enable = true;
+                    sessionCommands =
+                      let
+                        primarymonitor = "HDMI-1";
+                        secondarymonitor = "DP-1";
+                      in
+                      ''
+                        ${pkgs.xorg.xinput}/bin/xinput map-to-output "Wacom Cintiq Pro 22 Finger touch" ${secondarymonitor}
+                        ${pkgs.xorg.xinput}/bin/xinput map-to-output "Wacom Cintiq Pro 22 Pen stylus" ${secondarymonitor}
+                        ${pkgs.xorg.xinput}/bin/xinput map-to-output "Wacom Cintiq Pro 22 Pen eraser" ${secondarymonitor}
+                        ${pkgs.xorg.xinput}/bin/xinput map-to-output "Wacom Cintiq Pro 22 Pad pad" ${secondarymonitor}
+                        xrandr --output ${primarymonitor} --primary --mode 1920x1080 --rate 120.00 --pos 0x0 
+                        xrandr --output ${secondarymonitor} --mode 3840x2160 --rate 120.00 --right-of ${primarymonitor}
+                      '';
+                  };
                 desktopManager.gnome.enable = true;
                 wacom.enable = true;
 
@@ -63,22 +79,6 @@
                 };
               };
             };
-
-            # Use xsetwacom commands in a startup script
-            systemd.user.services.wacom-fix =
-              let
-                monitor = "DP-1";
-              in
-              {
-                enable = true;
-                description = "Fix Wacom mapping on startup";
-                after = [ "graphical-session.target" ];
-                wantedBy = [ "default.target" ];
-                serviceConfig = {
-                  ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.xorg.xinput}/bin/xinput map-to-output \"Wacom Cintiq Pro 22 Finger\" ${monitor} && ${pkgs.xorg.xinput}/bin/xinput map-to-output \"Wacom Cintiq Pro 22 Pen Pen (0x23606a19)\" ${monitor}'";
-                  Restart = "always";
-                };
-              };
 
             users.users.genzo = {
               isNormalUser = true;
