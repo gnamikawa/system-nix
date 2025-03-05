@@ -16,7 +16,7 @@
       nixosConfigurations.GEN-DPC = nixpkgs.lib.nixosSystem {
         inherit system;
         modules = [
-          ({ config, pkgs, ... }: {
+          ({ config, ... }: {
             nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
             imports = [ ./hardware-configuration.nix ]; # Keep hardware config separate
