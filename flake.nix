@@ -7,7 +7,7 @@
   };
 
   outputs =
-    { self, nixpkgs, nvim-nix, ... }@inputs:
+    { self, nixpkgs, nvim-nix }:
     let
       system = "x86_64-linux";  # Change if using a different architecture
       pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
@@ -16,7 +16,8 @@
       nixosConfigurations.GEN-DPC = nixpkgs.lib.nixosSystem {
         inherit system;
         modules = [
-          ({ config, ... }: {
+          {
+            system.stateVersion = "24.11";
             nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
             imports = [ ./hardware-configuration.nix ]; # Keep hardware config separate
@@ -24,11 +25,9 @@
             boot.loader.systemd-boot.enable = true;
             boot.loader.efi.canTouchEfiVariables = true;
 
-            networking = {
-              hostName = "GEN-DPC";
-              # wireless.enable = true;
-              networkmanager.enable = true;
-            };
+            networking.hostName = "GEN-DPC";
+            networking.networkmanager.enable = true;
+            # networking.wireless.enable = true;
 
             time.timeZone = "Asia/Tokyo";
 
@@ -36,7 +35,6 @@
             i18n.extraLocaleSettings = { LC_ALL = "en_US.UTF-8"; };
 
             security.rtkit.enable = true;
-
 
             services = {
               displayManager.defaultSession = "none+i3";
@@ -133,8 +131,7 @@
               nerd-fonts.jetbrains-mono
             ];
 
-            system.stateVersion = "24.11";
-          })
+          }
         ];
       };
     };
