@@ -123,6 +123,7 @@
                 evtest
                 krita
                 blender
+                discord
                 nvim-nix.defaultPackage.${system}
               ];
 
