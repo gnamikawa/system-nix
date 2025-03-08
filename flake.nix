@@ -26,7 +26,7 @@
             boot.loader.efi.canTouchEfiVariables = true;
 
             networking.hostName = "GEN-DPC";
-            networking.networkmanager.enable = true;
+            # networking.networkmanager.enable = true;
             # networking.wireless.enable = true;
 
             time.timeZone = "Asia/Tokyo";
