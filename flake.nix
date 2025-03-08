@@ -78,6 +78,10 @@
               };
             };
 
+            nix.gc.automatic = true;
+            nix.gc.dates = "daily";
+            nix.gc.options = "--delete-older-than 7d";
+
             users.users.genzo = {
               isNormalUser = true;
               description = "Genzo Namikawa";
