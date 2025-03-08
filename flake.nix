@@ -122,6 +122,8 @@
                 krita
                 blender
                 discord
+                rust-analyzer
+                inotify-tools
                 nvim-nix.defaultPackage.${system}
               ];
 
