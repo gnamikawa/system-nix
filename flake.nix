@@ -37,7 +37,7 @@
             security.rtkit.enable = true;
 
             services = {
-              displayManager.defaultSession = "none+i3";
+              displayManager.defaultSession = "sway";
               printing.enable = true;
               pulseaudio.enable = false;
 
@@ -49,35 +49,27 @@
               };
 
               xserver = {
-                enable = true;
+                enable = false;
                 xkb.layout = "us";
                 displayManager =
                   {
                     gdm.enable = true;
-                    sessionCommands =
-                      let
-                        primarymonitor = "HDMI-1";
-                        secondarymonitor = "DP-1";
-                      in
-                      ''
-                        ${pkgs.xorg.xinput}/bin/xinput map-to-output "Wacom Cintiq Pro 22 Finger touch" ${secondarymonitor}
-                        ${pkgs.xorg.xinput}/bin/xinput map-to-output "Wacom Cintiq Pro 22 Pen stylus" ${secondarymonitor}
-                        ${pkgs.xorg.xinput}/bin/xinput map-to-output "Wacom Cintiq Pro 22 Pen eraser" ${secondarymonitor}
-                        ${pkgs.xorg.xinput}/bin/xinput map-to-output "Wacom Cintiq Pro 22 Pad pad" ${secondarymonitor}
-                        xrandr --output ${primarymonitor} --primary --mode 1920x1080 --rate 120.00 --pos 0x0 
-                        xrandr --output ${secondarymonitor} --mode 3840x2160 --rate 120.00 --right-of ${primarymonitor}
-                      '';
                   };
                 desktopManager.gnome.enable = true;
                 wacom.enable = true;
 
-                windowManager.i3 = {
-                  enable = true;
-                  extraPackages = with pkgs; [ dmenu i3status i3blocks ];
-                };
+                # windowManager.i3 = {
+                #   enable = true;
+                #   extraPackages = with pkgs; [ dmenu i3status i3blocks ];
+                # };
               };
             };
 
+            programs.sway = {
+              enable = true;
+              wrapperFeatures.gtk = true;
+            };
+            hardware.graphics.enable = true;
             nix.gc.automatic = true;
             nix.gc.dates = "daily";
             nix.gc.options = "--delete-older-than 7d";
@@ -128,6 +120,7 @@
                 discord
                 rust-analyzer
                 inotify-tools
+                wlr-randr
                 nvim-nix.defaultPackage.${system}
               ];
 
