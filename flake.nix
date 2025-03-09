@@ -26,8 +26,6 @@
             boot.loader.efi.canTouchEfiVariables = true;
 
             networking.hostName = "GEN-DPC";
-            # networking.networkmanager.enable = true;
-            # networking.wireless.enable = true;
 
             time.timeZone = "Asia/Tokyo";
 
@@ -57,11 +55,6 @@
                   };
                 desktopManager.gnome.enable = true;
                 wacom.enable = true;
-
-                # windowManager.i3 = {
-                #   enable = true;
-                #   extraPackages = with pkgs; [ dmenu i3status i3blocks ];
-                # };
               };
             };
 
