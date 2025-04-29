@@ -36,4 +36,52 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+
+
+
+
+
+
+
+
+
+  # 1. Allow NVIDIA's proprietary driver and 32-bit libraries
+  nixpkgs.config.allowUnfree = true;
+  hardware.graphics.enable = true;
+  hardware.graphics.enable32Bit = true;
+
+  # 2. Configure the NVIDIA module (DRM/KMS + driver selection)
+  boot.kernelParams = [
+    "nvidia-drm.modeset=1"
+    "nvidia_drm.fbdev=1"
+  ];
+
+  hardware.nvidia = {
+    # Use the "stable" series for both 3070 & 1650
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
+
+    # Enable DRM modesetting for Wayland compositors
+    modesetting.enable = true;
+
+    # Use proprietary module (best compatibility)
+    open = false;
+
+    # (Optional) NVIDIA Settings GUI
+    nvidiaSettings = true;
+
+    # (Optional) fine-tune power management
+    powerManagement.enable = false;
+  };
+
+  # 3. Wayland environment variables for GBM, GLX, browsers, etc.
+  environment.variables = {
+    XDG_SESSION_TYPE            = "wayland";
+    GBM_BACKEND                 = "nvidia-drm";
+    __GLX_VENDOR_LIBRARY_NAME   = "nvidia";
+    MOZ_ENABLE_WAYLAND          = "1";
+    NIXOS_OZONE_WL              = "1";
+    WLR_NO_HARDWARE_CURSORS     = "1";
+  };
 }
+
