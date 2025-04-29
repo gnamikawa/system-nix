@@ -116,6 +116,12 @@
                 rust-analyzer
                 inotify-tools
                 wlr-randr
+                mako
+                mpv
+                grim
+                wl-clipboard
+                i3blocks
+                i3status
                 nvim-nix.defaultPackage.${system}
               ];
 
