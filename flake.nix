@@ -2,150 +2,60 @@
   description = "System configuration";
 
   inputs = {
+    nixpkgs2511.url = "github:NixOS/nixpkgs/9da7f1cf7f8a6e2a7cb3001b048546c92a8258b4?narHash=sha256-SlybxLZ1/e4T2lb1czEtWVzDCVSTvk9WLwGhmxFmBxI%3D";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nvim-nix.url = "github:gnamikawa/nvim-nix";
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    dotfiles-nix = {
+      url = "github:gnamikawa/dotfiles-nix/master";
+      # url = "path:/home/genzo/repositories/dotfiles-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    sysc-greet = {
+      url = "github:Nomadcxx/sysc-greet?ref=v1.1.2";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
-    { self, nixpkgs, nvim-nix }:
+    {
+      self,
+      nixpkgs,
+      nixpkgs2511,
+      home-manager,
+      dotfiles-nix,
+      nur,
+      sysc-greet,
+    }:
     let
-      system = "x86_64-linux";  # Change if using a different architecture
-      pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
+      constants = import ./constants.nix;
+      pkgs2511 = (import nixpkgs2511) { system = constants.system; };
     in
     {
-      nixosConfigurations.GEN-DPC = nixpkgs.lib.nixosSystem {
-        inherit system;
+      nixosConfigurations.${constants.hostName} = nixpkgs.lib.nixosSystem {
+        system = constants.system;
+        specialArgs = {
+          inherit constants;
+          inherit pkgs2511;
+        };
         modules = [
-          {
-            system.stateVersion = "24.11";
-            nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
-            imports = [ ./hardware-configuration.nix ]; # Keep hardware config separate
-
-            services.openssh = {
-              enable = true;
-              ports = [ 22 ];
-              settings = {
-                PasswordAuthentication = true;
-                UseDns = true;
-                X11Forwarding = false;
-                PermitRootLogin = "prohibit-password"; # "yes", "without-password", "prohibit-password", "forced-commands-only", "no"
-              };
-            };
-
-            boot.loader.systemd-boot.enable = true;
-            boot.loader.efi.canTouchEfiVariables = true;
-
-            networking.hostName = "GEN-DPC";
-            networking.networkmanager.enable = true;
-
-            time.timeZone = "Asia/Tokyo";
-
-            i18n.defaultLocale = "en_US.UTF-8";
-            i18n.extraLocaleSettings = { LC_ALL = "en_US.UTF-8"; };
-
-            security.rtkit.enable = true;
-
-            services = {
-              displayManager.defaultSession = "sway";
-              printing.enable = true;
-              pulseaudio.enable = false;
-
-              pipewire = {
-                enable = true;
-                alsa.enable = true;
-                alsa.support32Bit = true;
-                pulse.enable = true;
-              };
-
-              xserver = {
-                enable = false;
-                xkb.layout = "us";
-                displayManager =
-                  {
-                    gdm.enable = true;
-                  };
-                desktopManager.gnome.enable = true;
-                wacom.enable = true;
-              };
-            };
-
-            programs.waybar.enable = true;
-
-            programs.sway = {
-              enable = true;
-              wrapperFeatures.gtk = true;
-            };
-
-            hardware.graphics.enable = true;
-
-            nix.gc.automatic = true;
-            nix.gc.dates = "daily";
-            nix.gc.options = "--delete-older-than 7d";
-
-            users.users.genzo = {
-              isNormalUser = true;
-              description = "Genzo Namikawa";
-              extraGroups = [ "networkmanager" "wheel" ];
-            };
-
-            programs.firefox.enable = true;
-            programs.neovim = {
-              enable = true;
-              defaultEditor = true;
-            };
-
-            environment = {
-              variables = {
-                EDITOR = "nvim";
-                BROWSER = "firefox";
-                TERMINAL = "terminator";
-              };
-
-              systemPackages = with pkgs; [
-                terminator
-                htop
-                wget
-                clang
-                git
-                ranger
-                stow
-                ripgrep
-                fzf
-                xclip
-                cargo
-                nodejs_23
-                unzip
-                i3
-                hwinfo
-                wineWowPackages.stable
-                pcmanfm
-                arandr
-                libwacom
-                xf86_input_wacom
-                evtest
-                krita
-                blender
-                discord
-                rust-analyzer
-                inotify-tools
-                wlr-randr
-                mako
-                mpv
-                grim
-                wl-clipboard
-                i3blocks
-                i3status
-                nvim-nix.defaultPackage.${system}
-              ];
-
-            };
-
-            fonts.packages = with pkgs; [
-              nerd-fonts.jetbrains-mono
-            ];
-
-          }
+          (
+            { config, pkgs, ... }:
+            {
+              nixpkgs.overlays = [ nur.overlays.default ];
+            }
+          )
+          dotfiles-nix.nixosModules.default
+          home-manager.nixosModules.home-manager
+          sysc-greet.nixosModules.default
+          ./hardware-configuration.nix
+          ./system-configuration.nix
         ];
       };
     };
