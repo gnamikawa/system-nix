@@ -70,10 +70,13 @@
               };
             };
 
+            programs.waybar.enable = true;
+
             programs.sway = {
               enable = true;
               wrapperFeatures.gtk = true;
             };
+
             hardware.graphics.enable = true;
 
             nix.gc.automatic = true;
