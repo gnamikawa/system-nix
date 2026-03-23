@@ -60,8 +60,6 @@
     tmpfiles.rules = [
       "d /media 0755 root root -"
       "d /media/%u 0755 %u users -"
-      "d /usr/share/sysc-greet/ascii_configs 0755 root root -"
-      "L /usr/share/sysc-greet/ascii_configs/sway.conf 0644 root root - ${./assets/usr/share/sysc-greet/ascii_configs/sway.conf}"
     ];
   };
 
