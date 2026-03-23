@@ -45,11 +45,6 @@
   };
 
   systemd = {
-    targets = {
-      sway-session = {
-        description = "Sway session proxy";
-      };
-    };
     services = {
       udiskie = {
         description = "Udiskie automounter";
