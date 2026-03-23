@@ -1,5 +1,0 @@
-[Desktop Entry]
-Name=Sway UWSM (Custom)
-Comment=An intelligent Wayland compositor managed by UWSM.
-Exec=/run/current-system/sw/bin/uwsm start -F -- /run/current-system/sw/bin/sway --unsupported-gpu > /dev/null 2>&1
-Type=Application

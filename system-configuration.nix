@@ -172,11 +172,11 @@
 
     uwsm = {
       enable = true;
-      # waylandCompositors.sway = {
-      #   prettyName = "Sway";
-      #   comment = "User-defined sway compositor managed by UWSM";
-      #   binPath = "/run/current-system/sw/bin/sway";
-      # };
+      waylandCompositors.sway = {
+        prettyName = "Sway";
+        comment = "User-defined sway compositor managed by UWSM";
+        binPath = "/run/current-system/sw/bin/sway --unsupported-gpu > /dev/null 2>&1";
+      };
     };
 
     sway = {
@@ -409,12 +409,6 @@
       bash-completion
       direnv
       nix-direnv
-
-      (pkgs.writeTextFile {
-        name = "monkeypatches";
-        destination = "/share/wayland-sessions/sway.desktop";
-        text = lib.readFile ./assets/share/wayland-sessions/sway.desktop;
-      })
     ];
   };
 
