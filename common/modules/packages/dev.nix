@@ -64,6 +64,5 @@
     curl.dev # libcurl4-openssl-dev
     glib.dev # libglib2.0-dev
     pcre.dev # libpcre3-dev
-
   ];
 }

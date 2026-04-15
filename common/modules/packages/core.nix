@@ -51,7 +51,6 @@
     lvm2
     fuse
     fuse3
-    udisks
 
     # ── Networking ────────────────────────────────────────────────────────────
     iproute2
@@ -77,11 +76,11 @@
     dmidecode
     acpid
     acpi
-    libwacom
-    xf86_input_wacom
 
     # ── Desktop / WM ─────────────────────────────────────────────────────────
     libnotify
+    gsettings-desktop-schemas
+    glib
 
     # ── Terminals & Console ───────────────────────────────────────────────────
     ncurses

@@ -92,9 +92,6 @@
     hdparm
     smartmontools # smartctl
     parted
-    dosfstools # mkfs.fat
-    ntfs3g # NTFS support
-    exfat # exFAT support
 
   ];
 }

@@ -52,10 +52,10 @@
           sysc-greet.nixosModules.default
           ./hardware-configuration.nix
           ./system-configuration.nix
-          ./packages/core.nix
-          ./packages/java.nix
-          ./packages/dev.nix
-          ./packages/utils.nix
+          ./common/modules/packages/core.nix
+          ./common/modules/packages/java.nix
+          ./common/modules/packages/dev.nix
+          ./common/modules/packages/utils.nix
         ];
       };
     };
