@@ -3,10 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nur = {
-      url = "github:nix-community/NUR";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     dotfiles-nix = {
       # url = "github:gnamikawa/dotfiles-nix/master";
       url = "path:/home/genzo/repositories/dotfiles-nix";
@@ -28,34 +24,18 @@
       nixpkgs,
       home-manager,
       dotfiles-nix,
-      nur,
       sysc-greet,
     }:
-    let
-      constants = import ./constants.nix;
-    in
     {
-      nixosConfigurations.${constants.hostName} = nixpkgs.lib.nixosSystem {
-        system = constants.system;
-        specialArgs = {
-          inherit constants;
-        };
+      nixosConfigurations."GEN-DPC" = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { };
         modules = [
-          (
-            { config, pkgs, ... }:
-            {
-              nixpkgs.overlays = [ nur.overlays.default ];
-            }
-          )
           dotfiles-nix.nixosModules.default
           home-manager.nixosModules.home-manager
           sysc-greet.nixosModules.default
-          ./hardware-configuration.nix
-          ./system-configuration.nix
-          ./common/modules/packages/core.nix
-          ./common/modules/packages/java.nix
-          ./common/modules/packages/dev.nix
-          ./common/modules/packages/utils.nix
+          ./common/hardware-configuration.nix
+          ./common/system-configuration.nix
         ];
       };
     };
