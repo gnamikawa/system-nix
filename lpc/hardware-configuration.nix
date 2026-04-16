@@ -9,8 +9,8 @@
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
-  # boot.hibernation.devUUID = "864978b2-784f-4528-8aa0-b1d2b84e1e12";
-  # boot.hibernation.resumeOffset = "9314304";
+  boot.hibernation.devUUID = "664ef959-7503-45fa-bfe0-64efe81293cf";
+  boot.hibernation.resumeOffset = "14514176";
 
   boot.initrd.availableKernelModules = [
     "xhci_pci"
