@@ -2,6 +2,7 @@
 {
   imports = [
     ./modules/network.nix
+    ./modules/bluetooth.nix
     ./modules/filesystem.nix
     ./modules/polkit.nix
     ./modules/packages/core.nix
@@ -20,7 +21,6 @@
       "wheel"
       "video"
       "audio"
-      "bluetooth"
     ];
   };
 
@@ -104,7 +104,6 @@
     printing.enable = true;
     pulseaudio.enable = false;
     gnome.gnome-keyring.enable = true;
-    blueman.enable = true;
     dbus.enable = true;
     mpd.enable = true;
     usbmuxd.enable = true;

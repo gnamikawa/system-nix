@@ -90,16 +90,6 @@
         wayland-protocols
       ];
     };
-    bluetooth = {
-      enable = true;
-      powerOnBoot = true;
-      settings = {
-        Policy = {
-          ReconnectAttempts = 20;
-          ReconnectIntervals = "1,2,4,8";
-        };
-      };
-    };
   };
 
   environment.variables = {
