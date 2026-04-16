@@ -21,4 +21,8 @@
       thunar-volman
     ];
   };
+
+  users.users.genzo.extraGroups = [
+    "storage"
+  ];
 }
