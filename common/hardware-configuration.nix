@@ -4,10 +4,10 @@
     ./modules/hibernation.nix
   ];
 
-  # zramSwap = {
-  #   enable = true;
-  #   memoryPercent = 50; # uses 50% of RAM as compressed swap
-  # };
+  zramSwap = {
+    enable = true;
+    memoryPercent = 50; # uses 50% of RAM as compressed swap
+  };
 
   boot.plymouth.enable = true;
   boot.loader.grub = {
