@@ -14,6 +14,7 @@
 
   boot.hibernation.devUUID = "864978b2-784f-4528-8aa0-b1d2b84e1e12";
   boot.hibernation.resumeOffset = "9314304";
+  boot.hibernation.swapSize = 16;
 
   boot = {
     initrd.availableKernelModules = [

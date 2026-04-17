@@ -9,6 +9,10 @@
       type = lib.types.str;
       description = "Swap file offset for hibernation";
     };
+    swapSize = lib.mkOption {
+      type = lib.types.int;
+      description = "Swap file size (GB)";
+    };
   };
 
   config = {
@@ -22,7 +26,7 @@
     swapDevices = [
       {
         device = "/swapfile";
-        size = 8 * 1024;
+        size = config.boot.hibernation.swapSize * 1024;
       }
     ];
 

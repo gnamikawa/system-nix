@@ -11,6 +11,7 @@
   ];
   boot.hibernation.devUUID = "664ef959-7503-45fa-bfe0-64efe81293cf";
   boot.hibernation.resumeOffset = "14514176";
+  boot.hibernation.swapSize = 8;
 
   boot.initrd.availableKernelModules = [
     "xhci_pci"
