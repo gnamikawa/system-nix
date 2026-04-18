@@ -9,6 +9,7 @@
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ./modules/wacom.nix
+    ./modules/nvidia.nix
   ];
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
@@ -29,7 +30,6 @@
       "uinput"
     ];
     kernelParams = [
-      # "nvidia-drm.modeset=1"
       "quiet"
       "loglevel=0"
       "splash"
@@ -71,14 +71,6 @@
 
   hardware = {
     uinput.enable = true;
-    nvidia = {
-      open = false;
-      package = config.boot.kernelPackages.nvidiaPackages.beta;
-      nvidiaSettings = true;
-      videoAcceleration = true;
-      modesetting.enable = true;
-      gsp.enable = true;
-    };
     cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
     opentabletdriver = {
       enable = true;

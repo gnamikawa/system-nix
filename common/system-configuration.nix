@@ -184,7 +184,6 @@
   environment = {
     extraInit = ''
       export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${pkgs.stdenv.cc.cc.lib}/lib:/run/opengl-driver/lib:${pkgs.libglvnd}/lib:${pkgs.glib.out}/lib:${pkgs.zlib.out}/lib"
-      export PATH=$PATH:${pkgs.cudaPackages.cuda_nvcc.out}/bin
     '';
 
     pathsToLink = [

@@ -5,9 +5,4 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "GEN-DPC";
-
-  services.xserver = {
-    enable = true;
-    videoDrivers = [ "nvidia" ];
-  };
 }
