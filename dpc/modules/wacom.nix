@@ -1,5 +1,8 @@
 { pkgs, ... }:
 {
+  users.users.genzo.extraGroups = [
+    "input"
+  ];
   boot.kernelModules = [
     "wacom"
     "hid_wacom"
