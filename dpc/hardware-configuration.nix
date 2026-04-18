@@ -13,7 +13,7 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
   boot.hibernation.devUUID = "864978b2-784f-4528-8aa0-b1d2b84e1e12";
-  boot.hibernation.resumeOffset = "9314304";
+  boot.hibernation.resumeOffset = "77428736";
   boot.hibernation.swapSize = 16 * 2;
 
   boot = {
