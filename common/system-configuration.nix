@@ -5,6 +5,7 @@
     ./modules/bluetooth.nix
     ./modules/filesystem.nix
     ./modules/polkit.nix
+    ./modules/samba.nix
     ./modules/packages/core.nix
     ./modules/packages/java.nix
     ./modules/packages/dev.nix
@@ -108,12 +109,6 @@
     mpd.enable = true;
     usbmuxd.enable = true;
     libinput.enable = true;
-
-    samba = {
-      enable = true;
-      smbd.enable = true;
-      nmbd.enable = false;
-    };
 
     timesyncd = {
       enable = true;
