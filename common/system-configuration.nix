@@ -5,6 +5,7 @@
     ./modules/bluetooth.nix
     ./modules/filesystem.nix
     ./modules/polkit.nix
+    ./modules/localsend.nix
     ./modules/samba.nix
     ./modules/packages/core.nix
     ./modules/packages/java.nix
