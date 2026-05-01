@@ -9,7 +9,7 @@
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ./modules/wacom.nix
-    ./modules/nvidia.nix
+    ./modules/opengraphics.nix
   ];
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
