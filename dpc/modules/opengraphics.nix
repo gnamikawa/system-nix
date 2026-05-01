@@ -1,4 +1,4 @@
 { ... }:
 {
-  hardware.opengl = true;
+  hardware.graphics.enable = true;
 }

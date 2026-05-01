@@ -6,7 +6,7 @@
       openFirewall = true;
       smbd.enable = true;
       nmbd.enable = false;
-      shares = {
+      settings = {
         genzo = {
           path = "/home/genzo";
           "valid users" = "genzo";

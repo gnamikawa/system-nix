@@ -1,20 +1,15 @@
+{ config, pkgs, ... }:
 {
-  config,
-  pkgs,
-  lib,
-  ...
-}:
-{
-  nix.settings.substituters = lib.mkBefore [
+  nix.settings.substituters = [
     "https://cache.nixos-cuda.org"
   ];
-  nix.settings.trusted-public-keys = lib.mkBefore [
+  nix.settings.trusted-public-keys = [
     "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
   ];
 
   services.xserver = {
     enable = true;
-    videoDrivers = lib.mkBefore [ "nvidia" ];
+    videoDrivers = [ "nvidia" ];
   };
 
   hardware.nvidia = {
@@ -25,7 +20,7 @@
     modesetting.enable = true;
   };
 
-  boot.kernelParams = lib.mkBefore [
+  boot.kernelParams = [
     "nvidia-drm.modeset=1"
     "nvidia-drm.fbdev=1"
   ];
@@ -37,6 +32,6 @@
     WLR_NO_HARDWARE_CURSORS = "1"; # fixes cursor rendering on Nvidia+Wayland
     NIXOS_OZONE_WL = "1"; # tells Electron apps to use Wayland
     XDG_SESSION_TYPE = "wayland";
-    systemPackages = lib.mkBefore [ pkgs.cudaPackages.cuda_nvcc ];
+    systemPackages = [ pkgs.cudaPackages.cuda_nvcc ];
   };
 }
