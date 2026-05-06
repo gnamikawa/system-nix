@@ -72,10 +72,6 @@
   hardware = {
     uinput.enable = true;
     cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-    opentabletdriver = {
-      enable = true;
-      daemon.enable = true;
-    };
     graphics = {
       enable = true;
       extraPackages = with pkgs; [
