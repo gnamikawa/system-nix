@@ -30,6 +30,10 @@
   home-manager.useUserPackages = true;
 
   nix = {
+    extraOptions = ''
+      keep-outputs = true
+      keep-derivations = true
+    '';
     settings = {
       experimental-features = [
         "nix-command"
