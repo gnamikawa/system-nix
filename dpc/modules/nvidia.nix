@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 {
   nix.settings.substituters = [
     "https://cache.nixos-cuda.org"
@@ -19,4 +19,16 @@
     videoAcceleration = true;
     modesetting.enable = true;
   };
+
+  environment.systemPackages = with pkgs; [
+    cudaPackages.cudatoolkit
+    cudaPackages.cuda_cudart
+    cudaPackages.cuda_nvml_dev
+    cudaPackages.cuda_nvcc
+    cudaPackages.cudnn
+    cudaPackages.nccl
+    cudaPackages.libcublas
+    cudaPackages.libcurand
+    cudaPackages.cuda_nvrtc
+  ];
 }
