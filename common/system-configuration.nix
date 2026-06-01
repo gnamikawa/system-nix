@@ -7,6 +7,7 @@
     ./modules/polkit.nix
     ./modules/localsend.nix
     ./modules/samba.nix
+    ./modules/pipewire.nix
     ./modules/packages/core.nix
     ./modules/packages/java.nix
     ./modules/packages/dev.nix
