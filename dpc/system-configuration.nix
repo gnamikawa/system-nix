@@ -1,5 +1,9 @@
 { ... }:
 {
+  imports = [
+    ./modules/ollama.nix
+  ];
+
   boot.loader.grub.device = "nodev";
   boot.loader.grub.efiSupport = true;
   boot.loader.efi.canTouchEfiVariables = true;
