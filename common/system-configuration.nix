@@ -65,13 +65,6 @@
     };
   };
 
-  systemd = {
-    tmpfiles.rules = [
-      "d /media 0755 root root -"
-      "d /media/%u 0755 %u users -"
-    ];
-  };
-
   networking.networkmanager.enable = true;
   time.timeZone = "Asia/Tokyo";
 
