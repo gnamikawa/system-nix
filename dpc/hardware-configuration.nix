@@ -33,6 +33,8 @@
       "quiet"
       "loglevel=0"
       "splash"
+      "amd_pstate=disable"
+      "iommu.strict=0"
     ];
 
     kernel.sysctl = {
