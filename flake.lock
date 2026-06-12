@@ -9,8 +9,8 @@
         "nur": "nur"
       },
       "locked": {
-        "lastModified": 1781235826,
-        "narHash": "sha256-iawxFasYqb5bJQVDKGIIhXbmD43PYljYnnIvuvdIVIg=",
+        "lastModified": 1781248411,
+        "narHash": "sha256-TPvOpjiRVEc3ve43TxeidAowBjA49KtEet8j9GBuF5A=",
         "path": "/home/genzo/repositories/dotfiles-nix",
         "type": "path"
       },
