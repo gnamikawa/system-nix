@@ -12,6 +12,7 @@
     ./modules/packages/java.nix
     ./modules/packages/dev.nix
     ./modules/packages/utils.nix
+    ./modules/docker.nix
   ];
 
   system.stateVersion = "25.11";
