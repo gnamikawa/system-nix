@@ -147,14 +147,6 @@
     flatpak.enable = true;
     xserver.enable = true;
 
-    pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-      jack.enable = true;
-    };
-
     openssh = {
       enable = true;
       ports = [ 22 ];
