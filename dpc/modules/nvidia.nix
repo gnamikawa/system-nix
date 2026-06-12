@@ -19,6 +19,7 @@
     videoAcceleration = true;
     modesetting.enable = true;
   };
+  hardware.nvidia-container-toolkit.enable = true;
 
   environment.systemPackages = with pkgs; [
     cudaPackages.cudatoolkit
