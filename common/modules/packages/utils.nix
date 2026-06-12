@@ -53,6 +53,7 @@
     tcpdump
     rsync
     inetutils # telnet and basic inet tools
+    nethogs
 
     # ── Wayland / Display Tools ───────────────────────────────────────────────
     wlr-randr # RandR-like tool for wlroots compositors
