@@ -159,6 +159,10 @@
   };
 
   programs = {
+    nix-ld = {
+      enable = true;
+    };
+
     gnupg.agent = {
       enable = true;
       pinentryPackage = with pkgs; pinentry-all;
@@ -184,10 +188,6 @@
   };
 
   environment = {
-    extraInit = ''
-      export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${pkgs.stdenv.cc.cc.lib}/lib:/run/opengl-driver/lib:${pkgs.libglvnd}/lib:${pkgs.glib.out}/lib:${pkgs.zlib.out}/lib"
-    '';
-
     pathsToLink = [
       "/share/xdg-desktop-portal"
       "/share/applications"
