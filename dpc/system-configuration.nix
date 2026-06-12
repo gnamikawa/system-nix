@@ -2,6 +2,7 @@
 {
   imports = [
     ./modules/ollama.nix
+    ./modules/steam.nix
   ];
 
   boot.loader.grub.device = "nodev";
