@@ -38,7 +38,7 @@
             dotfiles-nix.nixosModules.default
             home-manager.nixosModules.home-manager
             sysc-greet.nixosModules.default
-            ./hosts/dpc
+            ./hosts/GEN-DPC
             ./modules
           ];
         };
@@ -48,7 +48,7 @@
             dotfiles-nix.nixosModules.default
             home-manager.nixosModules.home-manager
             sysc-greet.nixosModules.default
-            ./hosts/lpc
+            ./hosts/GEN-LPC
             ./modules
           ];
         };
