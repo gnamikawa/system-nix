@@ -27,26 +27,31 @@
       sysc-greet,
     }:
     let
-      mkHost =
-        host:
-        nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+    in
+    {
+      nixosConfigurations = {
+        "GEN-DPC" = nixpkgs.lib.nixosSystem {
+          inherit system;
           modules = [
             dotfiles-nix.nixosModules.default
             home-manager.nixosModules.home-manager
             sysc-greet.nixosModules.default
-            ./hosts/${host}
+            ./hosts/dpc
             ./modules
           ];
         };
-
-      system = "x86_64-linux";
-      pkgs = { inherit system; } |> import nixpkgs;
-    in
-    {
-      nixosConfigurations = {
-        "GEN-DPC" = mkHost "dpc";
-        "GEN-LPC" = mkHost "lpc";
+        "GEN-LPC" = nixpkgs.lib.nixosSystem {
+          inherit system;
+          modules = [
+            dotfiles-nix.nixosModules.default
+            home-manager.nixosModules.home-manager
+            sysc-greet.nixosModules.default
+            ./hosts/lpc
+            ./modules
+          ];
+        };
       };
 
       checks.${system} = { inherit pkgs; } |> import ./tests;
