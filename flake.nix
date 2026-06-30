@@ -39,11 +39,16 @@
             ./modules
           ];
         };
+
+      system = "x86_64-linux";
+      pkgs = { inherit system; } |> import nixpkgs;
     in
     {
       nixosConfigurations = {
         "GEN-DPC" = mkHost "dpc";
         "GEN-LPC" = mkHost "lpc";
       };
+
+      checks.${system} = { inherit pkgs; } |> import ./tests;
     };
 }
