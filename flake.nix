@@ -29,31 +29,25 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+      sharedModules = [
+        dotfiles-nix.nixosModules.default
+        home-manager.nixosModules.home-manager
+        sysc-greet.nixosModules.default
+        ./modules
+      ];
+      # Single source of truth for what each host is made of; the VM tests
+      # import the same lists so the system under test cannot drift from the
+      # real configuration (docs/adr/0001).
+      hostModules = {
+        "GEN-DPC" = sharedModules ++ [ ./hosts/GEN-DPC ];
+        "GEN-LPC" = sharedModules ++ [ ./hosts/GEN-LPC ];
+      };
     in
     {
-      nixosConfigurations = {
-        "GEN-DPC" = nixpkgs.lib.nixosSystem {
-          inherit system;
-          modules = [
-            dotfiles-nix.nixosModules.default
-            home-manager.nixosModules.home-manager
-            sysc-greet.nixosModules.default
-            ./hosts/GEN-DPC
-            ./modules
-          ];
-        };
-        "GEN-LPC" = nixpkgs.lib.nixosSystem {
-          inherit system;
-          modules = [
-            dotfiles-nix.nixosModules.default
-            home-manager.nixosModules.home-manager
-            sysc-greet.nixosModules.default
-            ./hosts/GEN-LPC
-            ./modules
-          ];
-        };
-      };
+      nixosConfigurations =
+        hostModules
+        |> builtins.mapAttrs (name: modules: nixpkgs.lib.nixosSystem { inherit system modules; });
 
-      checks.${system} = { inherit pkgs; } |> import ./tests;
+      checks.${system} = { inherit pkgs hostModules; } |> import ./tests;
     };
 }

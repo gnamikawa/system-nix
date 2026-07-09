@@ -6,7 +6,10 @@ let
   nixFiles = fileNames |> builtins.filter isSpecFile;
   runTest = testFileName: {
     name = testFileName;
-    value = args |> import "${testDir}/${testFileName}" |> pkgs.testers.runNixOSTest;
+    # Path arithmetic, not string interpolation: "${testDir}/${name}" loses
+    # the flake source accessor (lazy trees), which breaks module-key
+    # matching, e.g. disabledModules in carve-out.nix.
+    value = args |> import (testDir + "/${testFileName}") |> pkgs.testers.runNixOSTest;
   };
   testResults = nixFiles |> builtins.map runTest;
 in
