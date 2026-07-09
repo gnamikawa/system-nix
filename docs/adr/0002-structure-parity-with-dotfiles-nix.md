@@ -13,6 +13,10 @@ canonical-glossary `CONTEXT.md`, and numbered ADRs in `docs/adr/`.
 
 Documented deviations on the dotfiles side: `assets/` (out-of-store
 symlinked raw configs), `constants/` (theme data via `extraSpecialArgs`),
-`modules/sway/` as a directory because it carries an asset tree, and no
-`tests/` — this repository's VM tests already exercise the real host
-configurations including dotfiles-nix (see ADR 0001).
+`modules/sway/` as a directory because it carries an asset tree, layered
+aggregators (`modules/terminal.nix` under `modules/default.nix`) expressing
+its standalone terminal/graphical profile split, and no `tests/` — this
+repository's VM tests already exercise the real host configurations
+including dotfiles-nix (see ADR 0001). Dotfiles' *standalone* mode (its
+non-NixOS home-manager profiles) is invisible to those VM tests and is
+covered by dotfiles' own flake checks instead (its ADR 0003).
