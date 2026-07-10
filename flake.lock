@@ -1,7 +1,26 @@
 {
   "nodes": {
+    "claude-desktop-nix": {
+      "inputs": {
+        "nixpkgs": [
+          "dotfiles-nix",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1783684603,
+        "narHash": "sha256-C5c9zTeinvHwbNo2uAtrJfePg/JRruPwyKaatJvRYvw=",
+        "path": "/home/genzo/repositories/claude-desktop-nix",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/genzo/repositories/claude-desktop-nix",
+        "type": "path"
+      }
+    },
     "dotfiles-nix": {
       "inputs": {
+        "claude-desktop-nix": "claude-desktop-nix",
         "home-manager": "home-manager",
         "nixgl": "nixgl",
         "nixpkgs": [
@@ -10,8 +29,8 @@
         "nur": "nur"
       },
       "locked": {
-        "lastModified": 1783662493,
-        "narHash": "sha256-CmkedftN56upDj9VBeKx3MWtnJe+PZLShDBnsWp0sP8=",
+        "lastModified": 1783684653,
+        "narHash": "sha256-+DqDCLeONhqvJlFgO7Fble/4W0emSTIBrbgOfcvXRkU=",
         "path": "/home/genzo/repositories/dotfiles-nix",
         "type": "path"
       },

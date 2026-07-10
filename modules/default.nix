@@ -21,6 +21,7 @@
     ./desktop.nix
     ./ssh.nix
     ./services.nix
+    ./cowork.nix
   ];
 
   system.stateVersion = "25.11";
