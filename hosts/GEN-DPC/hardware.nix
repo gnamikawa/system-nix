@@ -35,7 +35,9 @@
     ];
 
     kernel.sysctl = {
-      "vm.overcommit_memory" = 2;
+      # Heuristic overcommit. Strict mode (2) SIGBUS-crashes desktop apps
+      # (Firefox, Node). See docs/adr/0003-heuristic-overcommit-on-desktops.md.
+      "vm.overcommit_memory" = 0;
     };
   };
 
