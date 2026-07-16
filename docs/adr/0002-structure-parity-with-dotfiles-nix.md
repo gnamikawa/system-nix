@@ -15,7 +15,9 @@ Documented deviations on the dotfiles side: `assets/` (out-of-store
 symlinked raw configs), `constants/` (theme data via `extraSpecialArgs`),
 `modules/sway/` as a directory because it carries an asset tree, layered
 aggregators (`modules/terminal.nix` under `modules/default.nix`) expressing
-its standalone terminal/graphical profile split, and no `tests/` — this
+its standalone terminal/graphical profile split, `devshells/` (the
+development-environment catalog, ADR 0004 — user-level and portable, so
+this repository deliberately has no analogue), and no `tests/` — this
 repository's VM tests already exercise the real host configurations
 including dotfiles-nix (see ADR 0001). Dotfiles' *standalone* mode (its
 non-NixOS home-manager profiles) is invisible to those VM tests and is

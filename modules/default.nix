@@ -10,10 +10,9 @@
     ./localsend.nix
     ./samba.nix
     ./audio.nix
-    ./packages/core.nix
-    ./packages/java.nix
-    ./packages/dev.nix
-    ./packages/utils.nix
+    ./packages/base-system.nix
+    ./packages/fonts.nix
+    ./ios-devices.nix
     ./docker.nix
     ./users.nix
     ./nix.nix
