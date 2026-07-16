@@ -27,7 +27,17 @@ and awaiting input — not merely that init ran), a user can log in
 **through the greeter**
 (the same path used on real hardware, not a shortcut around it), a
 terminal emulator can be launched **by the user's own keybinding** (the
-real keystroke, not a synthetic exec), and systemd is healthy
+real keystroke, not a synthetic exec), the ambient layer's toolkit
+resolves **in the user's real login shell** (not merely in the system
+closure), the default development environment is active **in every
+interactive shell at any working directory** (proven outside `$HOME`,
+not just beneath it), a project environment can **layer over** the
+default development environment (the project's tool shadows the
+default's) and can **remove it entirely** (the default's tools stop
+resolving while ambient tools survive — both proven through the real
+direnv mechanism in a fixture project, not synthetic PATH edits), plain
+`sudo` **inherits the invoking shell's environment** (what the caller's
+shell resolves, sudo resolves), and systemd is healthy
 (**healthy** means `systemctl is-system-running` reports `running`,
 sampled after the full boot → login → terminal flow has completed; a
 unit that fails only in the VM is fixed by an explicit carve-out, never

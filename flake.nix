@@ -48,6 +48,15 @@
         hostModules
         |> builtins.mapAttrs (name: modules: nixpkgs.lib.nixosSystem { inherit system modules; });
 
-      checks.${system} = { inherit pkgs hostModules; } |> import ./tests;
+      checks.${system} =
+        {
+          inherit pkgs hostModules;
+          # For the project-environment layering guarantee: the tests build
+          # an offline-evaluable fixture from the real devshell list and the
+          # locked nixpkgs source (tests/guarantees.nix).
+          dotfiles = dotfiles-nix;
+          nixpkgsSrc = nixpkgs;
+        }
+        |> import ./tests;
     };
 }
