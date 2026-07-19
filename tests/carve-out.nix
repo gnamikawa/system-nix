@@ -4,11 +4,14 @@
 # this list, never by weakening a test's assertions.
 { lib, dotfiles, ... }:
 {
-  # The dotfiles working tree cannot exist in the VM, but the asset
-  # mechanism (dotfiles-nix ADR-0005) symlinks ~/.config entries into it
-  # out-of-store; without a stand-in every raw-asset config — including
-  # Hyprland's — is a dangling link and the session cannot start. The
-  # flake source substitutes for the checkout, read-only.
+  # The dotfiles working tree cannot exist in the VM, so the flake source
+  # stands in for it, read-only. This is what puts the real raw-asset
+  # configs (dotfiles ADR-0005) behind the out-of-store symlinks: those
+  # configs are invisible to nix flake check by design, making this VM
+  # run their only automated coverage — broken config surfaces here as
+  # session crashes and failed units that the guarantee assertions catch
+  # implicitly. If a live-edit guarantee is ever added, upgrade the
+  # symlink to a writable copy of the same source.
   systemd.tmpfiles.rules = [
     "d /home/genzo/repositories 0755 genzo users -"
     "L+ /home/genzo/repositories/dotfiles-nix - - - - ${dotfiles}"

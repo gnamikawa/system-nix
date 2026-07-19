@@ -2,8 +2,8 @@
 # boot (greeter rendered) → login (through the greeter) → terminal (the
 # user's own keybinding) → ambient toolkit → default development
 # environment (present at any cwd; a project layers over it; a project
-# removes it) → plain-sudo inheritance → systemd health. Definitions in
-# CONTEXT.md; carve-out policy in docs/adr/0001.
+# removes it) → plain-sudo inheritance → system and user systemd health.
+# Definitions in CONTEXT.md; carve-out policy in docs/adr/0001.
 host:
 {
   hostModules,
@@ -196,5 +196,16 @@ in
           if state != "running":
               print(machine.execute("systemctl list-units --failed")[1])
           assert state == "running", f"systemd state: {state}"
+
+      with subtest("user services are healthy: no failed units in the session"):
+          # The raw-asset configs (waybar, hypridle, mako) run as user
+          # units; a config broken enough to crash its daemon shows up
+          # only here, since is-system-running covers the system manager.
+          state = machine.execute(
+              "su - genzo -c 'XDG_RUNTIME_DIR=/run/user/1000 systemctl --user is-system-running --wait'"
+          )[1].strip()
+          if state != "running":
+              print(machine.execute("su - genzo -c 'XDG_RUNTIME_DIR=/run/user/1000 systemctl --user list-units --failed'")[1])
+          assert state == "running", f"user systemd state: {state}"
     '';
 }
