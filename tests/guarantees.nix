@@ -116,8 +116,12 @@ in
   nodes.machine = {
     imports = hostModules.${host} ++ [ ./carve-out.nix ];
 
-    # VM sizing and a KMS-capable virtual GPU (sway cannot start on the
-    # default -vga std).
+    # carve-out.nix substitutes the flake source for the dotfiles checkout
+    # the asset symlinks point into.
+    _module.args.dotfiles = dotfiles;
+
+    # VM sizing and a KMS-capable virtual GPU (Hyprland cannot start on
+    # the default -vga std).
     virtualisation = {
       memorySize = 4096;
       cores = 2;
@@ -150,17 +154,18 @@ in
           machine.wait_for_text("Password")
           machine.send_chars("${nodes.machine.users.users.genzo.password}\n")
           machine.wait_until_succeeds(
-              "su - genzo -c 'XDG_RUNTIME_DIR=/run/user/1000 systemctl --user is-active wayland-wm@sway.service'",
+              "su - genzo -c 'XDG_RUNTIME_DIR=/run/user/1000 systemctl --user is-active wayland-wm@hyprland.desktop.service'",
               timeout=120,
           )
 
       with subtest("terminal: the user's keybinding opens kitty"):
-          # Input still belongs to the greeter's dying sway for a moment after
-          # the session target goes active; a keystroke sent too early is lost.
-          machine.wait_until_fails("pgrep -u greeter sway", timeout=60)
+          # Input still belongs to the greeter's dying Hyprland for a moment
+          # after the session target goes active; a keystroke sent too early
+          # is lost.
+          machine.wait_until_fails("pgrep -u greeter -f Hyprland", timeout=60)
           machine.send_key("meta_l-t")
           machine.wait_until_succeeds(
-              """su - genzo -c 'swaymsg -s $(ls /run/user/1000/sway-ipc.*) -t get_tree' | grep -q '"app_id": "kitty"'""",
+              """su - genzo -c 'XDG_RUNTIME_DIR=/run/user/1000 HYPRLAND_INSTANCE_SIGNATURE=$(ls /run/user/1000/hypr) hyprctl clients -j' | grep -q '"class": "kitty"'""",
               timeout=120,
           )
 
