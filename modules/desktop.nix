@@ -1,38 +1,28 @@
-{ lib, pkgs, ... }:
+{ pkgs, ... }:
 {
-  programs.sway = {
+  # Brings the Hyprland portal and, via withUWSM, the uwsm-managed
+  # session entry (wayland-wm@hyprland.service).
+  programs.hyprland = {
     enable = true;
-    wrapperFeatures = {
-      gtk = true;
-      base = true;
-    };
+    withUWSM = true;
   };
 
-  programs.uwsm = {
-    enable = true;
-    waylandCompositors.sway = {
-      prettyName = "Sway";
-      comment = "User-defined sway compositor managed by UWSM";
-      binPath = "/run/current-system/sw/bin/sway --unsupported-gpu > /dev/null 2>&1";
-    };
-  };
-
+  # The greeter runs on its own Hyprland instance; sysc-greet supplies
+  # the greetd session command, so no greetd override remains here.
   services.sysc-greet = {
     enable = true;
-    compositor = "sway";
+    compositor = "hyprland";
   };
-  services.greetd.settings.default_session.command = lib.mkForce "${pkgs.sway}/bin/sway -c /etc/greetd/sway-greeter-config --unsupported-gpu";
 
   xdg.portal = {
     enable = true;
-    wlr.enable = true;
     extraPortals = [
       pkgs.xdg-desktop-portal-gtk
     ];
     config = {
       common.default = "*";
-      sway.default = lib.mkForce [
-        "wlr"
+      hyprland.default = [
+        "hyprland"
         "gtk"
       ];
     };

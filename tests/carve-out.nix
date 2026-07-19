@@ -2,17 +2,27 @@
 # docs/adr/0001: only what is impossible in a VM or unknowable to a test
 # may appear here; a unit that fails only in the VM is fixed by extending
 # this list, never by weakening a test's assertions.
-{ lib, ... }:
+{ lib, dotfiles, ... }:
 {
+  # The dotfiles working tree cannot exist in the VM, but the asset
+  # mechanism (dotfiles-nix ADR-0005) symlinks ~/.config entries into it
+  # out-of-store; without a stand-in every raw-asset config — including
+  # Hyprland's — is a dangling link and the session cannot start. The
+  # flake source substitutes for the checkout, read-only.
+  systemd.tmpfiles.rules = [
+    "d /home/genzo/repositories 0755 genzo users -"
+    "L+ /home/genzo/repositories/dotfiles-nix - - - - ${dotfiles}"
+  ];
   # No GPU exists in QEMU. Wholesale: also drops the CUDA userspace and
   # binary cache, which prove nothing without a driver. A no-op on hosts
   # that don't import the module (GEN-LPC).
   disabledModules = [ ../hosts/GEN-DPC/nvidia.nix ];
 
-  # Without a GPU, wlroots (greeter sway and user sway) needs the software
-  # renderer.
-  environment.sessionVariables.WLR_RENDERER = "pixman";
-  systemd.services.greetd.environment.WLR_RENDERER = "pixman";
+  # Without a GPU, Hyprland (greeter and user session) needs software GL —
+  # aquamarine has no pixman renderer, so llvmpipe stands in for the old
+  # WLR_RENDERER=pixman knob.
+  environment.sessionVariables.LIBGL_ALWAYS_SOFTWARE = "1";
+  systemd.services.greetd.environment.LIBGL_ALWAYS_SOFTWARE = "1";
 
   # Hibernation resume device/offset and the swapfile size are properties
   # of the physical disks; the swapfile alone would overflow the VM disk.
