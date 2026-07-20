@@ -18,6 +18,7 @@
     ./nix.nix
     ./locale.nix
     ./desktop.nix
+    ./greeter-state.nix
     ./ssh.nix
     ./services.nix
     ./cowork.nix

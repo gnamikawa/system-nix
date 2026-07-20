@@ -43,6 +43,19 @@ sampled after the full boot → login → terminal flow has completed; a
 unit that fails only in the VM is fixed by an explicit carve-out, never
 by weakening this predicate).
 
+### World state
+The mutable disk state a configuration runs on top of: home directories,
+caches, uid/gid allocations, anything that persists across generations
+without being declared. The VM tests always run on a **pristine world** (a
+fresh disk image per run), so a guarantee is proven against first-boot
+state only; the real hosts run on an **accumulated world** that can drift
+(e.g. a reallocated system uid orphaning files — docs/adr/0005). World
+state is not a carve-out: carve-outs are deviations we chose, world drift
+is a dimension the tests cannot see. Where a guarantee depends on world
+state, the state must be either declared (an explicit persistence
+allowlist) or made ephemeral so the pristine assumption holds by
+construction.
+
 ### Test credential
 A fake, arbitrary password assigned to the real user account inside a test
 VM only (a carve-out). It is fixture data, not a secret: it unlocks nothing
