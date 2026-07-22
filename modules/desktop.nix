@@ -7,6 +7,11 @@
     withUWSM = true;
   };
 
+  # Promptless GPU screen recording (Ctrl+Shift+5 -> hypr record.sh). Installs
+  # gpu-screen-recorder and the setcap'd gsr-kms-server for KMS/NVENC capture,
+  # so recording a monitor needs no xdg-desktop-portal picker.
+  programs.gpu-screen-recorder.enable = true;
+
   # The greeter runs on its own Hyprland instance; sysc-greet supplies
   # the greetd session command, so no greetd override remains here.
   services.sysc-greet = {
