@@ -4,8 +4,10 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     dotfiles-nix = {
-      # url = "github:gnamikawa/dotfiles-nix/master";
-      url = "path:/home/genzo/repositories/dotfiles-nix";
+      # Pinned at the last pre-Hyprland rev of dotfiles-nix#25's narrative
+      # (Geist theme) so master stays sway-coherent until the Hyprland
+      # parity PR advances it across the Rewrite. See docs/adr/0006.
+      url = "github:gnamikawa/dotfiles-nix/2b5c042113d66e2c57bd55ba9b2f6d8976282b0b";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     sysc-greet = {
