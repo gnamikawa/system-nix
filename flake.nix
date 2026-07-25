@@ -4,8 +4,12 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     dotfiles-nix = {
-      # url = "github:gnamikawa/dotfiles-nix/master";
-      url = "path:/home/genzo/repositories/dotfiles-nix";
+      # Pinned to an explicit rev, not a branch: gnamikawa/dotfiles-nix#25
+      # (updates -> master) has not landed yet, so `master` still points at
+      # pre-Rewrite content. #25 is a fast-forward, so master will become this
+      # exact rev on merge — at which point this becomes `.../master` with no
+      # content change. See system-nix#5.
+      url = "github:gnamikawa/dotfiles-nix/4c728e5939f315b5881e25f78fbec655f6c21fa7";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     sysc-greet = {

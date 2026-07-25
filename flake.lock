@@ -9,13 +9,17 @@
       },
       "locked": {
         "lastModified": 1783684603,
-        "narHash": "sha256-C5c9zTeinvHwbNo2uAtrJfePg/JRruPwyKaatJvRYvw=",
-        "path": "/home/genzo/repositories/claude-desktop-nix",
-        "type": "path"
+        "narHash": "sha256-LrIFOLrDkco/A0b6wEOHb1Jp9BORpv7z5PFIolZxwoU=",
+        "owner": "gnamikawa",
+        "repo": "claude-desktop-nix",
+        "rev": "19adb64aba10d0b21ec90b62b24ee0bca3c2c85b",
+        "type": "github"
       },
       "original": {
-        "path": "/home/genzo/repositories/claude-desktop-nix",
-        "type": "path"
+        "owner": "gnamikawa",
+        "ref": "master",
+        "repo": "claude-desktop-nix",
+        "type": "github"
       }
     },
     "dotfiles-nix": {
@@ -29,14 +33,18 @@
         "nur": "nur"
       },
       "locked": {
-        "lastModified": 1784498511,
-        "narHash": "sha256-Blh6pzBQAb++DdF0nDO3ycR/kn2FgF9KottlSrmiCZ4=",
-        "path": "/home/genzo/repositories/dotfiles-nix",
-        "type": "path"
+        "lastModified": 1784946062,
+        "narHash": "sha256-SM5UT8fupSlXtEow6fmDJTv/uwrai/eq7oQ3MhpCjYo=",
+        "owner": "gnamikawa",
+        "repo": "dotfiles-nix",
+        "rev": "4c728e5939f315b5881e25f78fbec655f6c21fa7",
+        "type": "github"
       },
       "original": {
-        "path": "/home/genzo/repositories/dotfiles-nix",
-        "type": "path"
+        "owner": "gnamikawa",
+        "repo": "dotfiles-nix",
+        "rev": "4c728e5939f315b5881e25f78fbec655f6c21fa7",
+        "type": "github"
       }
     },
     "flake-parts": {
