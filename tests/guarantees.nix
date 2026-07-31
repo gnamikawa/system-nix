@@ -147,11 +147,15 @@ in
 
       with subtest("boot: greeter is rendered and awaiting input"):
           machine.wait_for_unit("graphical.target")
-          machine.wait_for_text("Username")
+          # The clock, which is the one bright thing on the screen: the status
+          # rail and the power verbs rest near-invisible until the pointer
+          # approaches them, so they are not something OCR can be asked for.
+          machine.wait_for_text(r"\d\d:\d\d")
 
       with subtest("login: through the greeter as genzo"):
-          machine.send_chars("genzo\n")
-          machine.wait_for_text("Password")
+          # No username to type. The screen opens on the password, for the one
+          # account that has a graphical session — offering a choice whose
+          # only other outcome is failure is the thing it deliberately drops.
           machine.send_chars("${nodes.machine.users.users.genzo.password}\n")
           machine.wait_until_succeeds(
               "su - genzo -c 'XDG_RUNTIME_DIR=/run/user/1000 systemctl --user is-active wayland-wm@hyprland.desktop.service'",
