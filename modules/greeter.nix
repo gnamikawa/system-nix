@@ -32,6 +32,12 @@ let
   # under the compositor where no one can read it. A login screen that dies
   # has to say why somewhere survivable, and journald is the only such place
   # before a user session exists.
+  #
+  # The identifier is a hint, not a promise. Making stderr a journal stream is
+  # what matters — GJS notices that and writes its entries to the journal
+  # directly, tagged from its own program name, so the screen's lines arrive
+  # under `gjs` rather than `greeter`. Grep the journal for the message, never
+  # for this tag.
   session = pkgs.writeShellScript "greeter-session" ''
     ${config.systemd.package}/bin/systemd-cat --identifier=greeter ${lib.getExe greeterPackage}
     ${hyprland}/bin/hyprctl dispatch exit
@@ -61,7 +67,16 @@ in
     enable = true;
     # The user is greetd's own default, `greeter`; greeter-state.nix pins its
     # uid and owns its home.
-    settings.default_session.command = "${hyprland}/bin/Hyprland --config ${greeterConf}";
+    #
+    # start-hyprland, not Hyprland: 0.55 expects to be started through its
+    # watchdog and says so on the screen when it isn't, which put an error
+    # banner on the login screen. The watchdog is also the behaviour we want
+    # here — it exits when Hyprland exits cleanly (the greeter's normal end)
+    # and restarts it when it doesn't, so a compositor crash puts the login
+    # screen back rather than leaving a black VT with greetd waiting on a
+    # process tree that will never do anything. Everything after `--` is
+    # forwarded to Hyprland (start-hyprland --help).
+    settings.default_session.command = "${hyprland}/bin/start-hyprland -- --config ${greeterConf}";
   };
 
   # The screen reads the session's command out of
