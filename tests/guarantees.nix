@@ -152,7 +152,31 @@ in
           # approaches them, so they are not something OCR can be asked for.
           machine.wait_for_text(r"\d\d:\d\d")
 
+      with subtest("login: a wrong password is refused, not mistaken for a login"):
+          # The screen used to read a refusal as a login: AstalGreet's login()
+          # hands greetd's error back as a return value rather than raising it,
+          # so nothing caught it. The screen then quit, as a screen must once a
+          # session starts, and greetd — holding a greeter that was gone with no
+          # session behind it — dropped the seat to black. One typo, one dead
+          # machine, and nothing in the VM test typed a wrong password.
+          machine.send_chars("not-the-password\n")
+          # No -t: the screen's own lines are not tagged `greeter` despite
+          # greeter.nix's systemd-cat --identifier. GJS writes structured
+          # entries to the journal itself once systemd-cat has made its stderr
+          # a journal stream, and tags them from its program name — they arrive
+          # as `gjs`. The phrase is distinctive; the tag is not to be relied on.
+          machine.wait_until_succeeds(
+              "journalctl -b | grep -q 'greetd refused the login'",
+              timeout=60,
+          )
+          machine.fail("journalctl -b -u greetd | grep -q 'without creating a session'")
+
       with subtest("login: through the greeter as genzo"):
+          # Also the proof that the refused attempt was cancelled: greetd will
+          # not open a second session while the first is still under
+          # configuration, so a screen that forgot to cancel could never be
+          # logged into again after one wrong password.
+          #
           # No username to type. The screen opens on the password, for the one
           # account that has a graphical session — offering a choice whose
           # only other outcome is failure is the thing it deliberately drops.

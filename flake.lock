@@ -74,17 +74,17 @@
         "nur": "nur"
       },
       "locked": {
-        "lastModified": 1785478529,
-        "narHash": "sha256-zgOHothIJTeVfycYxYGaaAtOpADZLX4wGwp9PUkwN9o=",
+        "lastModified": 1785515595,
+        "narHash": "sha256-VZlUEuYSPKnf8nOlSp/4ryoj/DGBO4rMk/mjxbf4YHg=",
         "owner": "gnamikawa",
         "repo": "dotfiles-nix",
-        "rev": "777f59d6321a848b2480544dce37cb91b6eed256",
+        "rev": "1f4f6c9a8c487cb39edeb5544ffa45910bf8a9d2",
         "type": "github"
       },
       "original": {
         "owner": "gnamikawa",
         "repo": "dotfiles-nix",
-        "rev": "777f59d6321a848b2480544dce37cb91b6eed256",
+        "rev": "1f4f6c9a8c487cb39edeb5544ffa45910bf8a9d2",
         "type": "github"
       }
     },
