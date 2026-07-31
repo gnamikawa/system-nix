@@ -79,3 +79,26 @@ first reboot under this module (ownership is corrected by tmpfiles).
 - Anything that ever legitimately needs greeter persistence must be added
   to the allowlist visibly, never by weakening the wipe — the same shape
   as ADR-0001's carve-out rule.
+
+## Amendment (2026-07-31, dotfiles-nix#49)
+
+sysc-greet is gone, replaced by an AGS login screen that presents no
+choice — no session picker, no last user, no theme. With nothing to
+remember, the allowlist has no members, so it was deleted rather than
+emptied: `~/.cache/sysc-greet → /var/cache/sysc-greet/prefs` and both
+`/var/cache/sysc-greet` directories are removed, and the module collects
+the old durable store with one `R!` line that is itself safe to drop once
+both hosts have booted past the cutover.
+
+What survives unchanged is everything the incident actually turned on:
+the pinned uid/gid, the boot-time wipe, and the rule that persistence is
+declared or it does not exist. The title is now literally true rather
+than true-except-for-a-list.
+
+Two consequences above are retired with the allowlist: the coupling to
+sysc-greet's internal cache paths, and the preference-persistence
+guarantee planned to catch upstream moving them. Neither has anything
+left to protect. The greeter's home is still named and still reset —
+`/var/lib/greeter` is where a Hyprland instance and a GTK app write —
+but the account itself now comes from NixOS's own greetd module, which
+declares it without a home, so `modules/greeter-state.nix` names one.
