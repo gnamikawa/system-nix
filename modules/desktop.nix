@@ -12,6 +12,9 @@
   # so recording a monitor needs no xdg-desktop-portal picker.
   programs.gpu-screen-recorder.enable = true;
 
+  # Disposable prerequisite for dotfiles-nix's AGS session-lock prototype.
+  security.pam.services.astal-auth = { };
+
   # The greeter runs on its own Hyprland instance; sysc-greet supplies
   # the greetd session command, so no greetd override remains here.
   services.sysc-greet = {

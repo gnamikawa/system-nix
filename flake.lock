@@ -29,14 +29,18 @@
         "nur": "nur"
       },
       "locked": {
-        "lastModified": 1784498511,
-        "narHash": "sha256-Blh6pzBQAb++DdF0nDO3ycR/kn2FgF9KottlSrmiCZ4=",
-        "path": "/home/genzo/repositories/dotfiles-nix",
-        "type": "path"
+        "lastModified": 1784651948,
+        "narHash": "sha256-eQXHcjrVMW/jNpSsj7959XTfNWl8SnS2Qnisvs4qm38=",
+        "owner": "gnamikawa",
+        "repo": "dotfiles-nix",
+        "rev": "abde2c2a7c245244109562cd868fef9616d92a52",
+        "type": "github"
       },
       "original": {
-        "path": "/home/genzo/repositories/dotfiles-nix",
-        "type": "path"
+        "owner": "gnamikawa",
+        "repo": "dotfiles-nix",
+        "rev": "abde2c2a7c245244109562cd868fef9616d92a52",
+        "type": "github"
       }
     },
     "flake-parts": {
