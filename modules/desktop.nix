@@ -7,6 +7,11 @@
     withUWSM = true;
   };
 
+  # Astal Auth authenticates the production AGS session lock through this
+  # dedicated PAM service. The lock package lives in dotfiles-nix; the system
+  # owns the authentication boundary.
+  security.pam.services.astal-auth = { };
+
   # Promptless GPU screen recording (Ctrl+Shift+5 -> hypr record.sh). Installs
   # gpu-screen-recorder and the setcap'd gsr-kms-server for KMS/NVENC capture,
   # so recording a monitor needs no xdg-desktop-portal picker.
