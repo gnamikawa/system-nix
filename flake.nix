@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     dotfiles-nix = {
-      url = "github:gnamikawa/dotfiles-nix/f068e414150cf275f2c9cc8a2e13af6e2751495b";
+      url = "github:gnamikawa/dotfiles-nix/cf80d500b0f9cd03455f48f2bae5ac0856fa0b71";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     sysc-greet = {

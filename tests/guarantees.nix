@@ -173,6 +173,22 @@ in
           for tool in ["rg", "tmux", "jq", "direnv"]:
               machine.succeed(f"su - genzo -c 'command -v {tool}'")
 
+      with subtest("host-selected locker: required implementations are exposed"):
+          machine.succeed("su - genzo -c 'command -v genzo-lock'")
+          ${
+            if host == "GEN-DPC" then
+              ''
+                machine.succeed("su - genzo -c 'command -v genzo-session-lock'")
+                machine.fail("su - genzo -c 'command -v hyprlock'")
+              ''
+            else
+              ''
+                machine.succeed("su - genzo -c 'command -v hyprlock'")
+                machine.succeed("su - genzo -c 'command -v genzo-session-lock'")
+                machine.succeed("su - genzo -c 'grep -q /bin/hyprlock $(command -v genzo-lock)' ")
+              ''
+          }
+
       with subtest("default development environment: present in every interactive shell at any cwd"):
           machine.succeed("su - genzo -c 'bash -ic ${checkGlobal}'")
 
