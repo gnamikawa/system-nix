@@ -43,12 +43,21 @@ let
     ${hyprland}/bin/hyprctl dispatch exit
   '';
 
+  # The greeter's warm surface has to land on the primary display, but this
+  # Hyprland instance has no monitors.conf: without a per-host pin,
+  # auto-placement puts whichever connector Hyprland enumerates first at (0,0)
+  # and the screen appears on the wrong seat. The greeter code identifies
+  # primary as "monitor at (0,0)" (main.tsx findPrimaryMonitor), so making
+  # that contract hold here is what puts the screen where it should be.
+  primaryRule = lib.optionalString (config.hardware.primaryMonitor != null)
+    "monitor = ${config.hardware.primaryMonitor}, preferred, 0x0, 1\n";
+
   # A compositor with one client, no wallpaper, and nothing to configure.
   # Note for anything added here: `#` opens a comment in a Hyprland config
   # even inside an exec argument, so a hex colour has to be written `##`.
   greeterConf = pkgs.writeText "greeter-hyprland.conf" ''
     monitor = , preferred, auto, 1
-
+    ${primaryRule}
     animations {
       enabled = false
     }
