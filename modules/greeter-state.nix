@@ -31,11 +31,5 @@
     "R! /var/lib/greeter"
     "d /var/lib/greeter 0700 greeter greeter -"
     "d /var/lib/greeter/.cache 0755 greeter greeter -"
-
-    # Collect the durable store the old greeter left behind. Deleting this
-    # line once both hosts have booted past the cutover is safe; leaving
-    # greeter-owned state around with nothing to claim it is the exact shape
-    # of the incident ADR-0005 records.
-    "R! /var/cache/sysc-greet"
   ];
 }

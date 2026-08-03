@@ -86,9 +86,10 @@ sysc-greet is gone, replaced by an AGS login screen that presents no
 choice — no session picker, no last user, no theme. With nothing to
 remember, the allowlist has no members, so it was deleted rather than
 emptied: `~/.cache/sysc-greet → /var/cache/sysc-greet/prefs` and both
-`/var/cache/sysc-greet` directories are removed, and the module collects
-the old durable store with one `R!` line that is itself safe to drop once
-both hosts have booted past the cutover.
+`/var/cache/sysc-greet` directory rules are removed, with no transitional
+cleanup rule. Any directory left by an older generation is inert: nothing
+in the current system reads, writes, or claims it, so it is stray data rather
+than undeclared greeter persistence.
 
 What survives unchanged is everything the incident actually turned on:
 the pinned uid/gid, the boot-time wipe, and the rule that persistence is

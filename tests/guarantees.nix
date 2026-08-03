@@ -107,6 +107,8 @@ let
 in
 {
   name = "guarantees-${host}";
+  # Deliberately paid per host: CONTEXT.md defines booted as the greeter being
+  # rendered and awaiting input, and requires every guarantee on every host.
   enableOCR = true;
 
   # The host config sets nixpkgs.config itself (e.g. allowUnfree for steam),
@@ -147,6 +149,8 @@ in
 
       with subtest("boot: greeter is rendered and awaiting input"):
           machine.wait_for_unit("graphical.target")
+          machine.succeed("fc-list | grep -q ': Geist:'")
+          machine.succeed("fc-list | grep -q ': Geist Mono:'")
           # The clock, which is the one bright thing on the screen: the status
           # rail and the power verbs rest near-invisible until the pointer
           # approaches them, so they are not something OCR can be asked for.

@@ -37,8 +37,11 @@
       machine.wait_until_succeeds(
           "XDG_RUNTIME_DIR=/run/user/988 "
           "HYPRLAND_INSTANCE_SIGNATURE=$(ls /run/user/988/hypr) "
-          "hyprctl layers | grep -q 'namespace: greeter'"
+          "hyprctl layers | grep -Eq 'namespace:[[:space:]]+greeter'"
       )
+      # Mapping can precede GTK's password widget taking keyboard focus under
+      # a loaded VM, so do not race synthetic input.
+      machine.sleep(1)
       machine.send_chars("${password}\n")
       machine.wait_until_succeeds(
           "su - genzo -c 'XDG_RUNTIME_DIR=/run/user/1000 systemctl --user is-active wayland-wm@hyprland.desktop.service'",
