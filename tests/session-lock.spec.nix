@@ -31,10 +31,16 @@
       machine.start()
       machine.wait_for_unit("graphical.target")
 
-      # Enter the real user session without inspecting rendered output.
-      machine.wait_until_succeeds("pgrep -u greeter -f sysc-greet")
-      machine.sleep(2)
-      machine.send_chars("genzo\n")
+      # Enter the real user session without inspecting rendered output. The
+      # AGS screen opens directly on the one graphical user's password; there
+      # is no username step or session picker.
+      machine.wait_until_succeeds(
+          "XDG_RUNTIME_DIR=/run/user/988 "
+          "HYPRLAND_INSTANCE_SIGNATURE=$(ls /run/user/988/hypr) "
+          "hyprctl layers | grep -Eq 'namespace:[[:space:]]+greeter'"
+      )
+      # Mapping can precede GTK's password widget taking keyboard focus under
+      # a loaded VM, so do not race synthetic input.
       machine.sleep(1)
       machine.send_chars("${password}\n")
       machine.wait_until_succeeds(

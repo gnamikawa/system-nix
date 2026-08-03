@@ -4,11 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     dotfiles-nix = {
-      url = "github:gnamikawa/dotfiles-nix/cf80d500b0f9cd03455f48f2bae5ac0856fa0b71";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    sysc-greet = {
-      url = "github:Nomadcxx/sysc-greet?ref=v1.1.2";
+      url = "github:gnamikawa/dotfiles-nix/69c80392c4d759ff34348c6e9233dc14a8575ea9";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
@@ -23,7 +19,6 @@
       nixpkgs,
       home-manager,
       dotfiles-nix,
-      sysc-greet,
     }:
     let
       system = "x86_64-linux";
@@ -31,8 +26,12 @@
       sharedModules = [
         dotfiles-nix.nixosModules.default
         home-manager.nixosModules.home-manager
-        sysc-greet.nixosModules.default
         ./modules
+        # The login screen, as a bin. It rides in the module list rather than
+        # in nixosSystem's specialArgs because the VM tests build their node
+        # from these same lists (docs/adr/0001) and get their specialArgs from
+        # the test framework, not from here.
+        { _module.args.greeterPackage = dotfiles-nix.packages.${system}.greeter; }
       ];
       # Single source of truth for what each host is made of; the VM tests
       # import the same lists so the system under test cannot drift from the

@@ -1,15 +1,14 @@
-# greeter-state.nix — the greeter is stateless except declared preference
-# paths (docs/adr/0005).
+# greeter-state.nix — the greeter keeps nothing (docs/adr/0005).
 #
-# /var/lib/greeter is wiped and rebuilt on every boot; the only thing that
-# survives is the allowlist below, symlinked into /var/cache/sysc-greet
-# (which tmpfiles re-owns each boot, so uid drift can never orphan it).
+# /var/lib/greeter is wiped and rebuilt on every boot, and there is no longer
+# an allowlist beside it: the AGS screen presents no choice, so it has no
+# preference to remember. sysc-greet did — a session picker, a last-user, a
+# theme — and /var/cache/sysc-greet existed to carry them across the wipe.
 # Session by-products (GLCache, wireplumber state, flatpak scaffolding, …)
 # still appear during a session — they just die at the next boot instead of
-# rotting. Post-mortem note: Hyprland crash reports land in
-# ~/.cache/hyprland and are therefore lost on reboot; the coredump in
-# journald survives and was sufficient to diagnose the incident that
-# produced this module.
+# rotting. Post-mortem note: Hyprland crash reports land in ~/.cache/hyprland
+# and are therefore lost on reboot; the coredump in journald survives and was
+# sufficient to diagnose the incident that produced this module.
 
 { ... }:
 {
@@ -21,22 +20,16 @@
   users.users.greeter.uid = 988;
   users.groups.greeter.gid = 988;
 
-  systemd.tmpfiles.rules = [
-    # Durable preference store, ownership re-asserted every boot.
-    "d /var/cache/sysc-greet 0755 greeter greeter -"
-    "d /var/cache/sysc-greet/prefs 0755 greeter greeter -"
+  # The account itself comes from NixOS's greetd module, which declares it
+  # without a home; a Hyprland instance and a GTK app both write to one, so
+  # it is named here and reset below rather than left pointing at /var/empty.
+  users.users.greeter.home = "/var/lib/greeter";
 
+  systemd.tmpfiles.rules = [
     # Boot-time reset of the greeter home ('!' lines run only at boot).
     # Removal runs as root, so orphaned foreign-uid state is deleted too.
     "R! /var/lib/greeter"
     "d /var/lib/greeter 0700 greeter greeter -"
     "d /var/lib/greeter/.cache 0755 greeter greeter -"
-
-    # Persistence allowlist. sysc-greet hardcodes $HOME/.cache/sysc-greet
-    # for its preferences/session files (it ignores XDG_CACHE_HOME); the
-    # symlink routes those writes into the durable store. Deliberately
-    # narrow: ~/.config/sysc-greet/themes (custom themes) is not
-    # allowlisted until it is actually used.
-    "L+ /var/lib/greeter/.cache/sysc-greet - - - - /var/cache/sysc-greet/prefs"
   ];
 }

@@ -18,6 +18,8 @@
     ./nix.nix
     ./locale.nix
     ./desktop.nix
+    ./hardware.nix
+    ./greeter.nix
     ./greeter-state.nix
     ./ssh.nix
     ./services.nix

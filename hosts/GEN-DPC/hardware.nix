@@ -73,5 +73,9 @@
   hardware = {
     uinput.enable = true;
     cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+    # Viotek GFV22CB, the centre panel at the desk. Consumed by the greeter
+    # (modules/greeter.nix) to pin its warm surface here instead of whichever
+    # connector Hyprland's auto-placement would put at (0,0).
+    primaryMonitor = "desc:Viewteck Co. Ltd. GFV22CB";
   };
 }
