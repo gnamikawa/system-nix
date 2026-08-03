@@ -37,7 +37,9 @@ default's) and can **remove it entirely** (the default's tools stop
 resolving while ambient tools survive — both proven through the real
 direnv mechanism in a fixture project, not synthetic PATH edits), plain
 `sudo` **inherits the invoking shell's environment** (what the caller's
-shell resolves, sudo resolves), and systemd is healthy
+shell resolves, sudo resolves), each host exposes its selected session-lock
+command while retaining only the lock implementations assigned to that host,
+and systemd is healthy
 (**healthy** means `systemctl is-system-running` reports `running`,
 sampled after the full boot → login → terminal flow has completed; a
 unit that fails only in the VM is fixed by an explicit carve-out, never
