@@ -47,8 +47,9 @@ let
   # Hyprland instance has no monitors.conf: without a per-host pin,
   # auto-placement puts whichever connector Hyprland enumerates first at (0,0)
   # and the screen appears on the wrong seat. The greeter code identifies
-  # primary as "monitor at (0,0)" (main.tsx findPrimaryMonitor), so making
-  # that contract hold here is what puts the screen where it should be.
+  # primary as "monitor at (0,0)" (common/monitors.ts's findPrimaryMonitor,
+  # shared with the session lock), so making that contract hold here is what
+  # puts the screen where it should be.
   primaryRule = lib.optionalString (config.hardware.primaryMonitor != null)
     "monitor = ${config.hardware.primaryMonitor}, preferred, 0x0, 1\n";
 
