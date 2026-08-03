@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     dotfiles-nix = {
-      url = "github:gnamikawa/dotfiles-nix/cf80d500b0f9cd03455f48f2bae5ac0856fa0b71";
+      url = "github:gnamikawa/dotfiles-nix/69c80392c4d759ff34348c6e9233dc14a8575ea9";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
