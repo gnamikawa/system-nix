@@ -155,6 +155,9 @@ in
           # rail and the power verbs rest near-invisible until the pointer
           # approaches them, so they are not something OCR can be asked for.
           machine.wait_for_text(r"\d\d:\d\d")
+          screen_text = machine.get_screen_text()
+          for startup_log in ["start-hyprland", "Welcome to Hyprland"]:
+              assert startup_log not in screen_text
 
       with subtest("login: a wrong password is refused, not mistaken for a login"):
           # The screen used to read a refusal as a login: AstalGreet's login()

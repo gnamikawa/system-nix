@@ -86,7 +86,13 @@ in
     # screen back rather than leaving a black VT with greetd waiting on a
     # process tree that will never do anything. Everything after `--` is
     # forwarded to Hyprland (start-hyprland --help).
-    settings.default_session.command = "${hyprland}/bin/start-hyprland -- --config ${greeterConf}";
+    #
+    # start-hyprland writes its own diagnostics to stdout and stderr. greetd
+    # connects both to the seat's VT, where those lines remain visible behind
+    # the login screen. Send the whole compositor process tree to journald so
+    # the VT stays clean without throwing away startup failures.
+    settings.default_session.command =
+      "${config.systemd.package}/bin/systemd-cat --identifier=greeter-compositor ${hyprland}/bin/start-hyprland -- --config ${greeterConf}";
   };
 
   # The screen reads the session's command out of
