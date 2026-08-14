@@ -25,7 +25,9 @@ let
 
   # The screen exits the moment a session starts, and greetd hands the seat
   # over only once this whole process tree is gone — so the compositor's only
-  # job is to run the screen and then follow it out.
+  # job is to run the screen and then follow it out. A compositor crash makes
+  # GJS fail instead; leave Hyprland running in that case so the seat wrapper
+  # below can put the screen back on the watchdog's replacement compositor.
   #
   # systemd-cat is not decoration: greetd gives its session the seat's VT for
   # stdio, and the screen is drawing on that VT, so anything it prints lands
@@ -39,8 +41,18 @@ let
   # under `gjs` rather than `greeter`. Grep the journal for the message, never
   # for this tag.
   session = pkgs.writeShellScript "greeter-session" ''
-    ${config.systemd.package}/bin/systemd-cat --identifier=greeter ${lib.getExe greeterPackage}
-    ${hyprland}/bin/hyprctl dispatch exit
+    socket="$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY"
+    socket_id=$(${pkgs.coreutils}/bin/stat --format=%d:%i "$socket")
+
+    if ${config.systemd.package}/bin/systemd-cat --identifier=greeter ${lib.getExe greeterPackage}; then
+      current_socket_id=$(${pkgs.coreutils}/bin/stat --format=%d:%i "$socket" 2>/dev/null || true)
+      if test "$current_socket_id" = "$socket_id"; then
+        ${hyprland}/bin/hyprctl --instance 0 dispatch exit
+        exit 0
+      fi
+    fi
+
+    exit 1
   '';
 
   # The greeter's warm surface has to land on the primary display, but this
@@ -68,8 +80,42 @@ let
       disable_splash_rendering = true
       force_default_wallpaper = 0
     }
+  '';
 
-    exec-once = ${session}
+  # An initialized Hyprland that crashes is deliberately restarted by
+  # start-hyprland in safe mode. Safe mode ignores the greeter config, so an
+  # exec-once there could never restore the screen. Keep the watchdog as the
+  # compositor owner, but launch the screen whenever one of its children
+  # exposes a Wayland socket. A successful screen exit is a login and shuts
+  # the compositor down; a failed exit means the socket disappeared, so the
+  # loop waits for the safe-mode replacement and launches a fresh screen.
+  greeterCompositor = pkgs.writeShellScript "greeter-compositor" ''
+    ${hyprland}/bin/start-hyprland -- --config ${greeterConf} &
+    watchdog_pid=$!
+
+    cleanup() {
+      kill "$watchdog_pid" 2>/dev/null || true
+      wait "$watchdog_pid" 2>/dev/null || true
+    }
+    trap cleanup EXIT
+    trap 'exit 0' INT TERM
+
+    while kill -0 "$watchdog_pid" 2>/dev/null; do
+      for socket in "$XDG_RUNTIME_DIR"/wayland-*; do
+        test -S "$socket" || continue
+        export WAYLAND_DISPLAY
+        WAYLAND_DISPLAY=$(${pkgs.coreutils}/bin/basename "$socket")
+
+        if ${session}; then
+          wait "$watchdog_pid"
+          exit $?
+        fi
+      done
+
+      ${pkgs.coreutils}/bin/sleep 0.2
+    done
+
+    wait "$watchdog_pid"
   '';
 in
 {
@@ -84,9 +130,16 @@ in
     # here — it exits when Hyprland exits cleanly (the greeter's normal end)
     # and restarts it when it doesn't, so a compositor crash puts the login
     # screen back rather than leaving a black VT with greetd waiting on a
-    # process tree that will never do anything. Everything after `--` is
-    # forwarded to Hyprland (start-hyprland --help).
-    settings.default_session.command = "${hyprland}/bin/start-hyprland -- --config ${greeterConf}";
+    # process tree that will never do anything. The seat wrapper above starts
+    # the screen on both its configured child and its safe-mode replacement.
+    #
+    # greetd attaches this whole tree's stdout and stderr to the seat VT. The
+    # VT is the greeter's visible surface, so start-hyprland's warning and
+    # Hyprland's banner/debug output must leave through journald instead.
+    # systemd-cat changes only those inherited streams: start-hyprland remains
+    # the watchdog supervising Hyprland, with its exit behavior intact.
+    settings.default_session.command =
+      "${config.systemd.package}/bin/systemd-cat --identifier=greeter-compositor ${greeterCompositor}";
   };
 
   # The screen reads the session's command out of

@@ -151,10 +151,46 @@ in
           machine.wait_for_unit("graphical.target")
           machine.succeed("fc-list | grep -q ': Geist:'")
           machine.succeed("fc-list | grep -q ': Geist Mono:'")
-          # The clock, which is the one bright thing on the screen: the status
+
+      with subtest("boot: compositor diagnostics bypass the visible VT for journald"):
+          machine.wait_until_succeeds("pgrep -u greeter -f /bin/start-hyprland")
+          machine.wait_until_succeeds("pgrep -u greeter -f /bin/Hyprland")
+          machine.succeed(
+              """for pid in $(pgrep -u greeter -f '/bin/(start-hyprland|Hyprland)'); do
+                for fd in 1 2; do
+                  case $(readlink /proc/$pid/fd/$fd) in /dev/tty*) exit 1;; esac
+                done
+              done"""
+          )
+          machine.succeed(
+              "journalctl -b -t greeter-compositor --no-pager | grep -q ."
+          )
+
+          # The date and clock are the bright things on the screen: the status
           # rail and the power verbs rest near-invisible until the pointer
           # approaches them, so they are not something OCR can be asked for.
-          machine.wait_for_text(r"\d\d:\d\d")
+          # Use the date because OCR routinely reads the clock's colon as `?`.
+          machine.wait_for_text(r"[A-Z][a-z]+ \d{1,2} [A-Z][a-z]+")
+
+      with subtest("boot: watchdog restores the greeter after a compositor crash"):
+          old_hyprland = machine.succeed(
+              "pgrep -u greeter -f /bin/Hyprland | tail -n1"
+          ).strip()
+          old_greeter = machine.succeed(
+              "pgrep -u greeter -x gjs | tail -n1"
+          ).strip()
+          machine.succeed(f"kill -KILL {old_hyprland}")
+          machine.wait_until_succeeds(
+              f"new_pid=$(pgrep -u greeter -f /bin/Hyprland | tail -n1); "
+              f'test -n "$new_pid" && test "$new_pid" != "{old_hyprland}"',
+              timeout=60,
+          )
+          machine.wait_until_succeeds(
+              f"new_pid=$(pgrep -u greeter -x gjs | tail -n1); "
+              f'test -n "$new_pid" && test "$new_pid" != "{old_greeter}"',
+              timeout=60,
+          )
+          machine.wait_for_text(r"[A-Z][a-z]+ \d{1,2} [A-Z][a-z]+")
 
       with subtest("login: a wrong password is refused, not mistaken for a login"):
           # The screen used to read a refusal as a login: AstalGreet's login()
