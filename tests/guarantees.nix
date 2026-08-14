@@ -173,6 +173,9 @@ in
           machine.wait_for_text(r"[A-Z][a-z]+ \d{1,2} [A-Z][a-z]+")
 
       with subtest("boot: watchdog restores the greeter after a compositor crash"):
+          watchdog = machine.succeed(
+              "pgrep -u greeter -f /bin/start-hyprland | tail -n1"
+          ).strip()
           old_hyprland = machine.succeed(
               "pgrep -u greeter -f /bin/Hyprland | tail -n1"
           ).strip()
@@ -189,6 +192,9 @@ in
               f"new_pid=$(pgrep -u greeter -x gjs | tail -n1); "
               f'test -n "$new_pid" && test "$new_pid" != "{old_greeter}"',
               timeout=60,
+          )
+          machine.succeed(
+              f'test "$(pgrep -u greeter -f /bin/start-hyprland | tail -n1)" = "{watchdog}"'
           )
           machine.wait_for_text(r"[A-Z][a-z]+ \d{1,2} [A-Z][a-z]+")
 
