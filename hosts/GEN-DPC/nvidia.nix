@@ -15,6 +15,15 @@
     nvidiaSettings = true;
     videoAcceleration = true;
     modesetting.enable = true;
+    # NVIDIA's S3/S4 wiring. On this host (open driver, v>=595) it sets
+    # NVreg_PreserveVideoMemoryAllocations=1 and NVreg_UseKernelSuspendNotifiers=1
+    # rather than installing the nvidia-suspend/hibernate/resume systemd
+    # units — kernelSuspendNotifier defaults true for that combo, so the
+    # driver hooks into the kernel PM notifier chain directly. Without this,
+    # resume leaves DRM/KMS stuck: every atomic commit is rejected with
+    # "Cannot commit when a page-flip is awaiting", freezing whatever
+    # wlroots compositor is drawing after wake.
+    powerManagement.enable = true;
   };
   hardware.nvidia-container-toolkit.enable = true;
 
