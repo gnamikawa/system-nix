@@ -7,8 +7,21 @@ boot. Firefox then stalls YouTube playback while it waits for its audio stream
 to initialize. Unplugging the interface, disconnecting the StreamCam, and
 trying another port may not recover it.
 
-This incident was diagnosed on 2026-08-14 and recovered on 2026-08-15 without
-rebooting.
+This failure was first diagnosed on 2026-08-14 and recurred on 2026-08-21 with
+the identical PipeWire signature. See "Recurrences" below.
+
+## Recurrences
+
+| Date | UMC202HD port | Registration state | Recovery path used |
+| --- | --- | --- | --- |
+| 2026-08-14 diagnosis, 2026-08-15 recovery | `usb 1-3.2` (chipset, behind failed Cintiq hub) | double: stale `card0` at `1-3.2` + live `card3` at `usb 3-4` after cable move | `snd-usb-audio` unbind of the stale `1-3.2:1.0` interface |
+| 2026-08-21 ~05:17 JST | `usb 1-4.2` (chipset, different port; no cable move performed) | single: only one registration wedged on the chipset bus | chipset xHCI rebind of `0000:02:00.0` |
+
+The 2026-08-21 recurrence did not require the Cintiq hub to have failed first;
+the chipset xHCI wedged with the UMC202HD on a different port and no
+StreamCam/hub anomalies in the same session. This widens the failure envelope:
+the chipset controller can lock up in isolation, not only as a downstream
+effect of a failing hub.
 
 ## Hardware topology
 
@@ -59,6 +72,20 @@ initialize that dead stream.
 
 ## Confirmed recovery
 
+Two recovery paths have worked, for two different registration states. Check
+the current state before choosing:
+
+- If two UMC202HD registrations exist (stale card behind a failed hub plus a
+  live card enumerated on the CPU controller after a cable move), use the
+  `snd-usb-audio` unbind path below. This is what recovered the 2026-08-15
+  incident.
+- If only one registration exists and it is wedged in place (no cable move,
+  the device is still on the chipset bus), rebind the chipset xHCI PCI
+  device — see the second block below. This is what recovered the 2026-08-21
+  incident.
+
+### snd-usb-audio unbind (double-registration case)
+
 First identify both paths. Do not assume ALSA card numbers remain stable:
 
 ```console
@@ -80,6 +107,8 @@ logical disconnect that the failed hub could not report. It does not change
 persistent configuration, and normal enumeration binds the driver again on a
 future boot.
 
+### Chipset xHCI rebind (single-registration case, or full-controller recovery)
+
 If the whole chipset USB controller must be recovered, unbind and bind its
 xHCI driver:
 
@@ -93,6 +122,10 @@ $ echo '0000:02:00.0' | sudo tee \
 This temporarily disconnects the Cintiq USB functions, StreamCam, Bluetooth,
 and every other device on buses 1 and 2. The UMC202HD on buses 3 or 4 is not
 affected.
+
+The 2026-08-21 recurrence recovered with exactly this command sequence. The
+UMC202HD was on the chipset bus (`usb 1-4.2`) at the time, and came back
+cleanly on the same port after the rebind.
 
 Do not write to `/sys/bus/pci/devices/0000:02:00.0/reset`. Its advertised
 reset method is `bus`, so it may reset sibling chipset functions, including
@@ -113,6 +146,13 @@ Updating to stable BIOS F66 is the leading prevention action, but it has not
 yet been tested on GEN-DPC. Until a later incident-free observation period
 confirms it, treat the firmware explanation as a strong hypothesis rather
 than a proven fix.
+
+The 2026-08-21 recurrence occurred seven days after the initial diagnosis
+with BIOS F51 still in place, no cable move between incidents, and the
+UMC202HD on a different chipset port than the first occurrence. This
+strengthens the chipset/AGESA hypothesis: the wedge is reproducing on the
+same controller without needing the specific 2026-08-14 topology to
+reappear. The BIOS update remains the outstanding prevention action.
 
 ## References
 
