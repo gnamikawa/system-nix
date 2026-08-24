@@ -50,15 +50,30 @@ let
   # primary as "monitor at (0,0)" (common/monitors.ts's findPrimaryMonitor,
   # shared with the session lock), so making that contract hold here is what
   # puts the screen where it should be.
-  primaryRule = lib.optionalString (config.hardware.primaryMonitor != null)
-    "monitor = ${config.hardware.primaryMonitor}, preferred, 0x0, 1\n";
+  primaryRule = lib.optionalString (
+    config.hardware.primaryMonitor != null
+  ) "monitor = ${config.hardware.primaryMonitor}, preferred, 0x0, 1\n";
 
-  # A compositor with one client, no wallpaper, and nothing to configure.
-  # Note for anything added here: `#` opens a comment in a Hyprland config
-  # even inside an exec argument, so a hex colour has to be written `##`.
+  # Cursor theme for the greeter's compositor. dotfiles-nix's user session
+  # picks Adwaita at 24 via home-manager (theme.nix), but the greeter user
+  # gets none of that — with no XCURSOR_THEME set, Hyprland falls back to
+  # its built-in placeholder (a small blue two-pronged shape) rather than
+  # anything a first-time visitor recognises as a pointer. Setting the env
+  # here matches what the user's compositor uses; environment.systemPackages
+  # below puts the theme where XCURSOR_PATH can find it.
+  cursorEnv = ''
+    env = XCURSOR_THEME,Adwaita
+    env = XCURSOR_SIZE,24
+  '';
+
+  # A compositor with one client, no wallpaper, and nothing to configure
+  # beyond the shared hardware slice. Note for anything added here: `#`
+  # opens a comment in a Hyprland config even inside an exec argument, so
+  # a hex colour has to be written `##`.
   greeterConf = pkgs.writeText "greeter-hyprland.conf" ''
     monitor = , preferred, auto, 1
     ${primaryRule}
+    ${cursorEnv}
     animations {
       enabled = false
     }
@@ -73,6 +88,11 @@ let
   '';
 in
 {
+  # Cursor theme referenced by cursorEnv above. Landed in the system profile
+  # so the greeter compositor can find it under /run/current-system/sw/share/
+  # icons/ — the greeter user has no ~/.icons to fall back to.
+  environment.systemPackages = [ pkgs.adwaita-icon-theme ];
+
   services.greetd = {
     enable = true;
     # The user is greetd's own default, `greeter`; greeter-state.nix pins its
@@ -93,8 +113,7 @@ in
     # text before the compositor covers it. systemd-cat rewires those streams
     # to journald so nothing lands on the VT; start-hyprland is otherwise
     # untouched and keeps supervising Hyprland with its exit behaviour intact.
-    settings.default_session.command =
-      "${config.systemd.package}/bin/systemd-cat --identifier=greeter-compositor ${hyprland}/bin/start-hyprland -- --config ${greeterConf}";
+    settings.default_session.command = "${config.systemd.package}/bin/systemd-cat --identifier=greeter-compositor ${hyprland}/bin/start-hyprland -- --config ${greeterConf}";
   };
 
   # The screen reads the session's command out of
