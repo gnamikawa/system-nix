@@ -22,7 +22,7 @@ let
   projectShell = pkgs.mkShell (
     { name = "dotfiles-default"; } // (import (dotfiles + "/devshells/default.nix") pkgs)
   );
-  fixtureFlake = pkgs.runCommand "project-env-fixture" { } ''
+  fixtureFlakeBuildScript = ''
     mkdir $out
     cp ${dotfiles + "/devshells/default.nix"} $out/default-env.nix
     cat > $out/flake.nix <<EOF
@@ -59,12 +59,13 @@ let
     }
     EOF
   '';
+  fixtureFlake = pkgs.runCommand "project-env-fixture" { } fixtureFlakeBuildScript;
 
   # The default development environment is claimed by interactive shell
   # init, so every check below runs through a real interactive shell
   # (bash -i) — the same path a terminal shell takes — and the checks
   # compare against the DEFAULT_DEV_ENV prefix that init exports.
-  setupProjects = pkgs.writeShellScript "setup-projects" ''
+  setupProjectsBody = ''
     set -eu
     mkdir -p /home/genzo/proj-layer /home/genzo/proj-drop
     echo "use flake ${fixtureFlake}#default" > /home/genzo/proj-layer/.envrc
@@ -72,13 +73,15 @@ let
     cd /home/genzo/proj-layer && direnv allow
     cd /home/genzo/proj-drop && direnv allow
   '';
-  checkGlobal = pkgs.writeShellScript "check-global" ''
+  setupProjects = pkgs.writeShellScript "setup-projects" setupProjectsBody;
+  checkGlobalBody = ''
     set -eu
     cd /tmp
     [ "$(command -v python3)" = "$DEFAULT_DEV_ENV/bin/python3" ]
     [ "$(command -v make)" = "$DEFAULT_DEV_ENV/bin/make" ]
   '';
-  checkLayer = pkgs.writeShellScript "check-layer" ''
+  checkGlobal = pkgs.writeShellScript "check-global" checkGlobalBody;
+  checkLayerBody = ''
     set -eu
     cd /home/genzo/proj-layer
     base="$(command -v python3)"
@@ -86,7 +89,8 @@ let
     layered="$(direnv exec . sh -c 'command -v python3')"
     [ "$layered" != "$base" ]
   '';
-  checkDrop = pkgs.writeShellScript "check-drop" ''
+  checkLayer = pkgs.writeShellScript "check-layer" checkLayerBody;
+  checkDropBody = ''
     set -eu
     cd /home/genzo/proj-drop
     [ "$(command -v python3)" = "$DEFAULT_DEV_ENV/bin/python3" ]
@@ -100,6 +104,7 @@ let
     fi
     direnv exec . sh -c 'command -v rg'
   '';
+  checkDrop = pkgs.writeShellScript "check-drop" checkDropBody;
   checkSudo = pkgs.writeShellScript "check-sudo" ''
     set -eu
     echo "$1" | sudo -S python3 --version

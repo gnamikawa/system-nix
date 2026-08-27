@@ -70,7 +70,7 @@ let
   # beyond the shared hardware slice. Note for anything added here: `#`
   # opens a comment in a Hyprland config even inside an exec argument, so
   # a hex colour has to be written `##`.
-  greeterConf = pkgs.writeText "greeter-hyprland.conf" ''
+  greeterConfText = ''
     monitor = , preferred, auto, 1
     ${primaryRule}
     ${cursorEnv}
@@ -86,6 +86,7 @@ let
 
     exec-once = ${session}
   '';
+  greeterConf = pkgs.writeText "greeter-hyprland.conf" greeterConfText;
 in
 {
   # Cursor theme referenced by cursorEnv above. Landed in the system profile
