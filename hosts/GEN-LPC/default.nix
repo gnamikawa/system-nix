@@ -6,5 +6,5 @@
 
   networking.hostName = "GEN-LPC";
 
-  boot.loader.grub.device = "/dev/nvme0n1";
+  boot.loader.grub.device = "/dev/sda";
 }
