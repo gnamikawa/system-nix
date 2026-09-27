@@ -4,6 +4,20 @@
   modulesPath,
   ...
 }:
+let
+  # ntfs3 has no Unix owners: without uid=/gid= every inode below the volume
+  # root comes up root:root 0755, so genzo cannot write anywhere useful.
+  # windows_names refuses names Windows cannot open, since both OSes share
+  # these volumes.
+  ntfsOptions = [
+    "nofail"
+    "x-systemd.automount"
+    "uid=${toString config.users.users.genzo.uid}"
+    "gid=${toString config.ids.gids.users}"
+    "umask=022"
+    "windows_names"
+  ];
+in
 {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -48,18 +62,12 @@
   fileSystems."/mnt/windows" = {
     device = "/dev/disk/by-uuid/3F02C6C0060C36FF";
     fsType = "ntfs3";
-    options = [
-      "nofail"
-      "x-systemd.automount"
-    ];
+    options = ntfsOptions;
   };
   fileSystems."/mnt/windows-ssd" = {
     device = "/dev/disk/by-uuid/524C612E40789B22";
     fsType = "ntfs3";
-    options = [
-      "nofail"
-      "x-systemd.automount"
-    ];
+    options = ntfsOptions;
   };
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/B442-5062";
