@@ -23,6 +23,8 @@
     ./greeter-state.nix
     ./ssh.nix
     ./services.nix
+    ./pueue.nix
+    ./askpass.nix
   ];
 
   system.stateVersion = "25.11";
