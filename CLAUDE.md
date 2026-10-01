@@ -1,8 +1,3 @@
-## Collaboration
-
-Agents never push. Edit and commit in the checkout directly; publishing
-commits to any remote is left to the user.
-
 ## Agent skills
 
 ### Issue tracker
